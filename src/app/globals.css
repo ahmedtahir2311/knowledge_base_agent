@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Final Professional Theme */
+  --bg-page: #0F172A; /* Slate 900 */
+  --bg-panel: #1E293B; /* Slate 800 */
+  
+  --text-primary: #F8FAFC; /* Slate 50 */
+  --text-secondary: #94A3B8; /* Slate 400 */
+  --text-accent: #3B82F6; /* Blue 500 */
+
+  --font-main: "Inter", sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-main);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-page { background-color: var(--bg-page); }
+  
+  /* Typography Utilities */
+  .font-main { font-family: var(--font-main); }
+  
+  /* Elegant Input */
+  .editorial-input {
+    background: transparent;
+    border-bottom: 1px solid #334155;
+    color: var(--text-primary);
+    transition: border-color 0.3s ease;
+  }
+  .editorial-input:focus {
+    outline: none;
+    border-color: var(--text-accent);
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+  }
+}
