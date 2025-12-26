@@ -72,7 +72,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 }}
               >
                 <span className="cursor-pointer rounded-md px-2 font-semibold text-lg hover:bg-muted">
-                  Chatbot
+                  Knowledge AI
                 </span>
               </Link>
               <div className="flex flex-row gap-1">
@@ -119,7 +119,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
         <SidebarContent>
           <SidebarHistory user={user} />
         </SidebarContent>
-        <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
+        <SidebarFooter>{/* Guest bar hidden as requested */}</SidebarFooter>
       </Sidebar>
 
       <AlertDialog

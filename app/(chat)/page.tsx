@@ -4,6 +4,7 @@ import { Chat } from "@/components/chat";
 import { DataStreamHandler } from "@/components/data-stream-handler";
 import { DEFAULT_CHAT_MODEL } from "@/lib/ai/models";
 import { generateUUID } from "@/lib/utils";
+import { auth } from "@/app/(auth)/auth";
 
 export default function Page() {
   return (
@@ -14,7 +15,7 @@ export default function Page() {
 }
 
 async function NewChatPage() {
-  const cookieStore = await cookies();
+  const [cookieStore, session] = await Promise.all([cookies(), auth()]);
   const modelIdFromCookie = cookieStore.get("chat-model");
   const id = generateUUID();
 
@@ -29,6 +30,7 @@ async function NewChatPage() {
           initialVisibilityType="private"
           isReadonly={false}
           key={id}
+          user={session?.user}
         />
         <DataStreamHandler />
       </>
@@ -45,6 +47,7 @@ async function NewChatPage() {
         initialVisibilityType="private"
         isReadonly={false}
         key={id}
+        user={session?.user}
       />
       <DataStreamHandler />
     </>

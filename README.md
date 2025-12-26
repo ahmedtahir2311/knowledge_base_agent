@@ -1,20 +1,8 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Chat SDK</h1>
-</a>
+# Knowledge Base Agent
 
-<p align="center">
-    Chat SDK is a free, open-source template built with Next.js and the AI SDK that helps you quickly build powerful chatbot applications.
-</p>
+## AI-Powered Chatbot with Document Management
 
-<p align="center">
-  <a href="https://chat-sdk.dev"><strong>Read Docs</strong></a> ·
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a>
-</p>
-<br/>
+A powerful AI chatbot built with Next.js and OpenAI, featuring document creation, code execution, and real-time collaboration.
 
 ## Features
 
@@ -24,48 +12,85 @@
 - [AI SDK](https://ai-sdk.dev/docs/introduction)
   - Unified API for generating text, structured objects, and tool calls with LLMs
   - Hooks for building dynamic chat and generative user interfaces
-  - Supports xAI (default), OpenAI, Fireworks, and other model providers
+  - Direct OpenAI integration
 - [shadcn/ui](https://ui.shadcn.com)
   - Styling with [Tailwind CSS](https://tailwindcss.com)
   - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
 - Data Persistence
-  - [Neon Serverless Postgres](https://vercel.com/marketplace/neon) for saving chat history and user data
-  - [Vercel Blob](https://vercel.com/storage/blob) for efficient file storage
+  - PostgreSQL for saving chat history and user data
+  - Vercel Blob for efficient file storage
 - [Auth.js](https://authjs.dev)
   - Simple and secure authentication
 
-## Model Providers
+## Model Provider
 
-This template uses the [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) to access multiple AI models through a unified interface. The default configuration includes [xAI](https://x.ai) models (`grok-2-vision-1212`, `grok-3-mini`) routed through the gateway.
+This application uses **OpenAI** models directly:
 
-### AI Gateway Authentication
+- **GPT-4o** - Most capable model
+- **GPT-4o Mini** - Fast and cost-effective
+- **O1 Mini** - Reasoning model for complex problems
 
-**For Vercel deployments**: Authentication is handled automatically via OIDC tokens.
+## Running Locally
 
-**For non-Vercel deployments**: You need to provide an AI Gateway API key by setting the `AI_GATEWAY_API_KEY` environment variable in your `.env.local` file.
+### Prerequisites
 
-With the [AI SDK](https://ai-sdk.dev/docs/introduction), you can also switch to direct LLM providers like [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://ai-sdk.dev/providers/ai-sdk-providers) with just a few lines of code.
+- Node.js 18+ and pnpm
+- PostgreSQL database
+- OpenAI API key
 
-## Deploy Your Own
+### Setup
 
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/templates/next.js/nextjs-ai-chatbot)
-
-## Running locally
-
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
-
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
+1. **Clone and install dependencies:**
 
 ```bash
 pnpm install
-pnpm db:migrate # Setup database or apply latest database changes
+```
+
+2. **Configure environment variables:**
+
+Create a `.env.local` file with:
+
+```bash
+# OpenAI API Key (Required)
+OPENAI_API_KEY=sk-your-openai-api-key
+
+# PostgreSQL Database (Required)
+POSTGRES_URL=postgresql://username:password@host:port/database
+
+# Auth Secret (Required)
+AUTH_SECRET=your-random-secret
+
+# Optional
+BLOB_READ_WRITE_TOKEN=your-blob-token
+REDIS_URL=your-redis-url
+```
+
+3. **Run database migrations:**
+
+```bash
+pnpm db:migrate
+```
+
+4. **Start the development server:**
+
+```bash
 pnpm dev
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000).
+Your app should now be running on [localhost:3000](http://localhost:3000).
+
+## Database Commands
+
+```bash
+pnpm db:generate    # Generate migrations
+pnpm db:migrate     # Run migrations
+pnpm db:studio      # Open Drizzle Studio
+pnpm db:push        # Push schema changes
+```
+
+## Production Build
+
+```bash
+pnpm build
+pnpm start
+```
