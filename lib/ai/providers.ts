@@ -1,3 +1,4 @@
+import { createOpenAI } from '@ai-sdk/openai';
 import { gateway } from "@ai-sdk/gateway";
 import {
   customProvider,
@@ -7,6 +8,16 @@ import {
 import { isTestEnvironment } from "../constants";
 
 const THINKING_SUFFIX_REGEX = /-thinking$/;
+
+// Initialize OpenAI provider if API key is available
+const openai = process.env.OPENAI_API_KEY
+  ? createOpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null;
+
+// Determine whether to use AI Gateway or direct OpenAI
+const useGateway = !openai || process.env.USE_AI_GATEWAY === 'true';
 
 export const myProvider = isTestEnvironment
   ? (() => {
@@ -27,6 +38,12 @@ export const myProvider = isTestEnvironment
     })()
   : null;
 
+/**
+ * Get language model based on configuration
+ * - Uses mock models in test environment
+ * - Uses AI Gateway if configured or no OpenAI key
+ * - Uses direct OpenAI if API key is available
+ */
 export function getLanguageModel(modelId: string) {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel(modelId);
@@ -35,28 +52,65 @@ export function getLanguageModel(modelId: string) {
   const isReasoningModel =
     modelId.includes("reasoning") || modelId.endsWith("-thinking");
 
+  // Handle reasoning models
   if (isReasoningModel) {
-    const gatewayModelId = modelId.replace(THINKING_SUFFIX_REGEX, "");
-
-    return wrapLanguageModel({
-      model: gateway.languageModel(gatewayModelId),
-      middleware: extractReasoningMiddleware({ tagName: "thinking" }),
-    });
+    const baseModelId = modelId.replace(THINKING_SUFFIX_REGEX, "");
+    
+    if (useGateway) {
+      return wrapLanguageModel({
+        model: gateway.languageModel(baseModelId),
+        middleware: extractReasoningMiddleware({ tagName: "thinking" }),
+      });
+    } else {
+      // For direct OpenAI, strip the provider prefix
+      const openaiModelId = baseModelId.replace(/^openai\//, '');
+      return wrapLanguageModel({
+        model: openai!.languageModel(openaiModelId),
+        middleware: extractReasoningMiddleware({ tagName: "thinking" }),
+      });
+    }
   }
 
-  return gateway.languageModel(modelId);
+  // Handle regular models
+  if (useGateway) {
+    return gateway.languageModel(modelId);
+  } else {
+    // For direct OpenAI, strip the provider prefix if present
+    const openaiModelId = modelId.replace(/^openai\//, '');
+    return openai!.languageModel(openaiModelId);
+  }
 }
 
+/**
+ * Get model for title generation
+ * Uses fast, cheap model for quick title generation
+ */
 export function getTitleModel() {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel("title-model");
   }
-  return gateway.languageModel("anthropic/claude-haiku-4.5");
+  
+  if (useGateway) {
+    return gateway.languageModel("anthropic/claude-haiku-4.5");
+  } else {
+    // Use GPT-4o-mini for title generation (fast and cheap)
+    return openai!.languageModel("gpt-4o-mini");
+  }
 }
 
+/**
+ * Get model for artifact generation
+ * Uses fast, cheap model for artifact content generation
+ */
 export function getArtifactModel() {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel("artifact-model");
   }
-  return gateway.languageModel("anthropic/claude-haiku-4.5");
+  
+  if (useGateway) {
+    return gateway.languageModel("anthropic/claude-haiku-4.5");
+  } else {
+    // Use GPT-4o-mini for artifact generation (fast and cheap)
+    return openai!.languageModel("gpt-4o-mini");
+  }
 }
