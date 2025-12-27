@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import type { User } from "next-auth";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { Moon, PlusIcon, Sun } from "lucide-react";
 import { SidebarToggle } from "@/components/molecules/sidebar-toggle";
 import { Button } from "@/components/atoms/button";
 import {
@@ -31,6 +32,7 @@ export function ChatNavbar({
 }) {
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
+  const router = useRouter();
 
   const isGuest = guestRegex.test(data?.user?.email ?? "");
 
@@ -39,6 +41,19 @@ export function ChatNavbar({
       {/* Left side: Panel toggle + Chat privacy */}
       {/* Left side: Panel toggle + Chat privacy */}
       <div className='flex items-center gap-2'>
+        <Button
+          className='md:h-8 md:w-8'
+          onClick={() => {
+            router.push("/");
+            router.refresh();
+          }}
+          size='icon'
+          variant='ghost'
+        >
+          <PlusIcon className='size-5' />
+          <span className='sr-only'>New Chat</span>
+        </Button>
+
         <div className='hidden'>
           <SidebarToggle />
         </div>

@@ -106,6 +106,9 @@ const PurePreviewMessage = ({
           )}
 
           {message.parts?.map((part, index) => {
+            const hasCreateCall = message.parts?.some(
+              (p) => p.type === "tool-createDocument"
+            );
             const { type } = part;
             const key = `message-${message.id}-part-${index}`;
 
@@ -289,6 +292,13 @@ const PurePreviewMessage = ({
             }
 
             if (type === "tool-updateDocument") {
+              // If we created the document in this same message, we don't need to show
+              // a separate update block. The create block's preview will inherently
+              // show the updated content as it streams/swr-revalidates.
+              if (hasCreateCall) {
+                return null;
+              }
+
               const { toolCallId } = part;
 
               if (part.output && "error" in part.output) {

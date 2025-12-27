@@ -93,14 +93,21 @@ export function DocumentPreview({
   const document: Document | null = previewDocument
     ? previewDocument
     : artifact.status === "streaming"
-    ? {
-        title: artifact.title,
-        kind: artifact.kind,
-        content: artifact.content,
-        id: artifact.documentId,
-        createdAt: new Date(),
-        userId: "noop",
-      }
+    ? (() => {
+        // Debug log for streaming fallback
+        console.log("DocumentPreview falling back to streaming artifact", {
+          kind: artifact.kind,
+          id: artifact.documentId,
+        });
+        return {
+          title: artifact.title,
+          kind: artifact.kind,
+          content: artifact.content,
+          id: artifact.documentId,
+          createdAt: new Date(),
+          userId: "noop",
+        };
+      })()
     : null;
 
   if (!document) {
