@@ -137,7 +137,14 @@ const PurePreviewMessage = ({
                           : undefined
                       }
                     >
-                      <Response>{sanitizeText(part.text)}</Response>
+                      <Response
+                        className={cn({
+                          "text-white prose-p:text-white prose-headings:text-white prose-li:text-white prose-strong:text-white prose-code:text-white prose-a:text-white prose-blockquote:text-white prose-td:text-white prose-th:text-white prose-tr:text-white":
+                            message.role === "user",
+                        })}
+                      >
+                        {sanitizeText(part.text)}
+                      </Response>
                     </MessageContent>
                   </div>
                 );

@@ -29,7 +29,7 @@ import { useDataStream } from "@/context/data-stream-provider";
 import { Messages } from "@/components/organisms/chat/messages"; // Assuming I will move messages.tsx there
 import { MultimodalInput } from "@/components/organisms/multimodal-input";
 import { getChatHistoryPaginationKey } from "@/components/organisms/sidebar-history";
-import { toast } from "@/components/toast";
+import { toast } from "@/components/atoms/toast";
 import type { VisibilityType } from "@/components/molecules/visibility-selector";
 
 export function Chat({

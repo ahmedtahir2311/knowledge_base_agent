@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { initialArtifactData, useArtifact } from "@/hooks/use-artifact";
-import { CrossIcon } from "lucide-react";
+import { X as CrossIcon } from "lucide-react";
 import { Button } from "./button";
 
 function PureArtifactCloseButton() {

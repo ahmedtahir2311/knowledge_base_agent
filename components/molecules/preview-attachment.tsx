@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Attachment } from "@/lib/types";
-import { LoaderIcon, CrossIcon as CrossSmallIcon } from "lucide-react";
+import { LoaderIcon, X as CrossSmallIcon } from "lucide-react";
 import { Loader } from "@/components/atoms/loader";
 import { Button } from "@/components/atoms/button";
 

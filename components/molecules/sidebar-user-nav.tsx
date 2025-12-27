@@ -24,7 +24,7 @@ import {
 } from "@/components/organisms/sidebar";
 import { guestRegex } from "@/lib/constants";
 import { LoaderIcon } from "lucide-react";
-import { toast } from "@/components/toast";
+import { toast } from "@/components/atoms/toast";
 
 export function SidebarUserNav({ user }: { user: User }) {
   const router = useRouter();

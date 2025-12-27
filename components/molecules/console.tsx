@@ -10,7 +10,7 @@ import { useArtifactSelector } from "@/hooks/use-artifact";
 import { cn } from "@/lib/utils";
 import { Loader } from "@/components/atoms/loader";
 import {
-  CrossIcon as CrossSmallIcon,
+  X as CrossSmallIcon,
   TerminalIcon as TerminalWindowIcon,
 } from "lucide-react";
 import { Button } from "@/components/atoms/button";

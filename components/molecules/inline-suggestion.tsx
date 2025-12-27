@@ -7,7 +7,7 @@ import { useWindowSize } from "usehooks-ts";
 import type { UISuggestion } from "@/lib/editor/suggestions";
 import { cn } from "@/lib/utils";
 import type { ArtifactKind } from "@/components/artifacts/definitions";
-import { CrossIcon, MessageSquare as MessageIcon } from "lucide-react";
+import { X as CrossIcon, MessageSquare as MessageIcon } from "lucide-react";
 import { Button } from "@/components/atoms/button";
 
 export const Suggestion = ({
