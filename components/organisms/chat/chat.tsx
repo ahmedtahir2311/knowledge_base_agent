@@ -202,6 +202,7 @@ export function Chat({
       <div className='overscroll-behavior-contain flex h-dvh min-w-0 touch-pan-y flex-col bg-background'>
         <ChatNavbar
           chatId={id}
+          isLoading={status === "submitted" || status === "streaming"}
           isReadonly={isReadonly}
           selectedVisibilityType={visibilityType}
           user={user}

@@ -15,6 +15,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { useLocalStorage, useWindowSize } from "usehooks-ts";
+import { Button } from "@/components/atoms/button";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
@@ -24,7 +25,7 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "./prompt-input-layout";
-import { ArrowUpIcon } from "lucide-react";
+import { ArrowUpIcon, Loader2Icon } from "lucide-react";
 import { PreviewAttachment } from "@/components/molecules/preview-attachment";
 import { SuggestedActions } from "@/components/molecules/suggested-actions";
 import type { VisibilityType } from "@/components/molecules/visibility-selector";
@@ -354,8 +355,14 @@ function PureMultimodalInput({
             value={input}
           />
 
-          {status === "submitted" ? (
-            <StopButton setMessages={setMessages} stop={stop} />
+          {status === "submitted" || status === "streaming" ? (
+            <Button
+              className='mb-1 size-8 rounded-full bg-primary text-primary-foreground transition-colors duration-200'
+              disabled={true}
+              size='icon'
+            >
+              <Loader2Icon className='animate-spin' size={14} />
+            </Button>
           ) : (
             <PromptInputSubmit
               className='mb-1 size-8 rounded-full bg-primary text-primary-foreground transition-colors duration-200 hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground'

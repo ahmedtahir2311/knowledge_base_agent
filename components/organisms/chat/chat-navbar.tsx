@@ -24,11 +24,13 @@ export function ChatNavbar({
   selectedVisibilityType,
   isReadonly,
   user,
+  isLoading,
 }: {
   chatId: string;
   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
   user: User | undefined;
+  isLoading: boolean;
 }) {
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
@@ -43,6 +45,7 @@ export function ChatNavbar({
       <div className='flex items-center gap-2'>
         <Button
           className='md:h-8 md:w-8'
+          disabled={isLoading}
           onClick={() => {
             router.push("/");
             router.refresh();
