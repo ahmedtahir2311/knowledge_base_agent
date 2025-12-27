@@ -2,7 +2,12 @@ import { memo } from "react";
 import { toast } from "sonner";
 import { useArtifact } from "@/hooks/use-artifact";
 import type { ArtifactKind } from "./artifact";
-import { FileIcon, LoaderIcon, MessageIcon, PencilEditIcon } from "./icons";
+import {
+  FileIcon,
+  LoaderIcon,
+  MessageSquare as MessageIcon,
+  PencilIcon as PencilEditIcon,
+} from "lucide-react";
 
 const getActionText = (
   type: "create" | "update" | "request-suggestions",
@@ -37,7 +42,7 @@ function PureDocumentToolResult({
 
   return (
     <button
-      className="flex w-fit cursor-pointer flex-row items-start gap-3 rounded-xl border bg-background px-3 py-2"
+      className='flex w-fit cursor-pointer flex-row items-start gap-3 rounded-xl border bg-background px-3 py-2'
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
@@ -65,9 +70,9 @@ function PureDocumentToolResult({
           boundingBox,
         }));
       }}
-      type="button"
+      type='button'
     >
-      <div className="mt-1 text-muted-foreground">
+      <div className='mt-1 text-muted-foreground'>
         {type === "create" ? (
           <FileIcon />
         ) : type === "update" ? (
@@ -76,7 +81,7 @@ function PureDocumentToolResult({
           <MessageIcon />
         ) : null}
       </div>
-      <div className="text-left">
+      <div className='text-left'>
         {`${getActionText(type, "past")} "${result.title}"`}
       </div>
     </button>
@@ -103,7 +108,7 @@ function PureDocumentToolCall({
 
   return (
     <button
-      className="cursor pointer flex w-fit flex-row items-start justify-between gap-3 rounded-xl border px-3 py-2"
+      className='cursor pointer flex w-fit flex-row items-start justify-between gap-3 rounded-xl border px-3 py-2'
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
@@ -127,10 +132,10 @@ function PureDocumentToolCall({
           boundingBox,
         }));
       }}
-      type="button"
+      type='button'
     >
-      <div className="flex flex-row items-start gap-3">
-        <div className="mt-1 text-zinc-500">
+      <div className='flex flex-row items-start gap-3'>
+        <div className='mt-1 text-zinc-500'>
           {type === "create" ? (
             <FileIcon />
           ) : type === "update" ? (
@@ -140,20 +145,20 @@ function PureDocumentToolCall({
           ) : null}
         </div>
 
-        <div className="text-left">
+        <div className='text-left'>
           {`${getActionText(type, "present")} ${
             type === "create" && "title" in args && args.title
               ? `"${args.title}"`
               : type === "update" && "description" in args
-                ? `"${args.description}"`
-                : type === "request-suggestions"
-                  ? "for document"
-                  : ""
+              ? `"${args.description}"`
+              : type === "request-suggestions"
+              ? "for document"
+              : ""
           }`}
         </div>
       </div>
 
-      <div className="mt-1 animate-spin">{<LoaderIcon />}</div>
+      <div className='mt-1 animate-spin'>{<LoaderIcon />}</div>
     </button>
   );
 }

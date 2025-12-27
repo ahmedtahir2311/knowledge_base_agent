@@ -3,13 +3,13 @@ import { memo } from "react";
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import type { Chat } from "@/lib/db/schema";
 import {
-  CheckCircleFillIcon,
+  CheckCircle as CheckCircleFillIcon,
   GlobeIcon,
   LockIcon,
   MoreHorizontalIcon,
   ShareIcon,
   TrashIcon,
-} from "./icons";
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,29 +53,29 @@ const PureChatItem = ({
       <DropdownMenu modal={true}>
         <DropdownMenuTrigger asChild>
           <SidebarMenuAction
-            className="mr-0.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            className='mr-0.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             showOnHover={!isActive}
           >
             <MoreHorizontalIcon />
-            <span className="sr-only">More</span>
+            <span className='sr-only'>More</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" side="bottom">
+        <DropdownMenuContent align='end' side='bottom'>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger className="cursor-pointer">
+            <DropdownMenuSubTrigger className='cursor-pointer'>
               <ShareIcon />
               <span>Share</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem
-                  className="cursor-pointer flex-row justify-between"
+                  className='cursor-pointer flex-row justify-between'
                   onClick={() => {
                     setVisibilityType("private");
                   }}
                 >
-                  <div className="flex flex-row items-center gap-2">
+                  <div className='flex flex-row items-center gap-2'>
                     <LockIcon size={12} />
                     <span>Private</span>
                   </div>
@@ -84,12 +84,12 @@ const PureChatItem = ({
                   ) : null}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="cursor-pointer flex-row justify-between"
+                  className='cursor-pointer flex-row justify-between'
                   onClick={() => {
                     setVisibilityType("public");
                   }}
                 >
-                  <div className="flex flex-row items-center gap-2">
+                  <div className='flex flex-row items-center gap-2'>
                     <GlobeIcon />
                     <span>Public</span>
                   </div>
@@ -100,7 +100,7 @@ const PureChatItem = ({
           </DropdownMenuSub>
 
           <DropdownMenuItem
-            className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive dark:text-red-500"
+            className='cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive dark:text-red-500'
             onSelect={() => onDelete(chat.id)}
           >
             <TrashIcon />

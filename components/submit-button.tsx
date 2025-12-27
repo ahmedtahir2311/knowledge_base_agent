@@ -2,7 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 
-import { LoaderIcon } from "@/components/icons";
+import { LoaderIcon } from "lucide-react";
 
 import { Button } from "./ui/button";
 
@@ -18,19 +18,19 @@ export function SubmitButton({
   return (
     <Button
       aria-disabled={pending || isSuccessful}
-      className="relative"
+      className='relative'
       disabled={pending || isSuccessful}
       type={pending ? "button" : "submit"}
     >
       {children}
 
       {(pending || isSuccessful) && (
-        <span className="absolute right-4 animate-spin">
+        <span className='absolute right-4 animate-spin'>
           <LoaderIcon />
         </span>
       )}
 
-      <output aria-live="polite" className="sr-only">
+      <output aria-live='polite' className='sr-only'>
         {pending || isSuccessful ? "Loading" : "Submit form"}
       </output>
     </Button>

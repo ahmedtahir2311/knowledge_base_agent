@@ -9,11 +9,11 @@ import { Artifact } from "@/components/create-artifact";
 import {
   CopyIcon,
   LogsIcon,
-  MessageIcon,
+  MessageSquare as MessageIcon,
   PlayIcon,
   RedoIcon,
   UndoIcon,
-} from "@/components/icons";
+} from "lucide-react";
 import { generateUUID } from "@/lib/utils";
 
 const OUTPUT_HANDLERS = {
@@ -93,7 +93,7 @@ export const codeArtifact = new Artifact<"code", Metadata>({
   content: ({ metadata, setMetadata, ...props }) => {
     return (
       <>
-        <div className="px-1">
+        <div className='px-1'>
           <CodeEditor {...props} />
         </div>
 

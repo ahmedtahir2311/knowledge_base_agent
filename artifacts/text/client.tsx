@@ -3,13 +3,13 @@ import { Artifact } from "@/components/create-artifact";
 import { DiffView } from "@/components/diffview";
 import { DocumentSkeleton } from "@/components/document-skeleton";
 import {
-  ClockRewind,
+  Clock3Icon as ClockRewind,
   CopyIcon,
-  MessageIcon,
+  MessageSquareIcon as MessageIcon,
   PenIcon,
   RedoIcon,
   UndoIcon,
-} from "@/components/icons";
+} from "lucide-react";
 import { Editor } from "@/components/text-editor";
 import type { Suggestion } from "@/lib/db/schema";
 import { getSuggestions } from "../actions";
@@ -65,7 +65,7 @@ export const textArtifact = new Artifact<"text", TextArtifactMetadata>({
     metadata,
   }) => {
     if (isLoading) {
-      return <DocumentSkeleton artifactKind="text" />;
+      return <DocumentSkeleton artifactKind='text' />;
     }
 
     if (mode === "diff") {
@@ -76,7 +76,7 @@ export const textArtifact = new Artifact<"text", TextArtifactMetadata>({
     }
 
     return (
-      <div className="flex flex-row px-4 py-8 md:p-20">
+      <div className='flex flex-row px-4 py-8 md:p-20'>
         <Editor
           content={content}
           currentVersionIndex={currentVersionIndex}
@@ -87,7 +87,7 @@ export const textArtifact = new Artifact<"text", TextArtifactMetadata>({
         />
 
         {metadata?.suggestions && metadata.suggestions.length > 0 ? (
-          <div className="h-dvh w-12 shrink-0 md:hidden" />
+          <div className='h-dvh w-12 shrink-0 md:hidden' />
         ) : null}
       </div>
     );

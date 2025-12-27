@@ -8,7 +8,7 @@ import { useWindowSize } from "usehooks-ts";
 import { useArtifact } from "@/hooks/use-artifact";
 import type { Document } from "@/lib/db/schema";
 import { getDocumentTimestampByIndex } from "@/lib/utils";
-import { LoaderIcon } from "./icons";
+import { LoaderIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
 type VersionFooterProps = {
@@ -37,19 +37,19 @@ export const VersionFooter = ({
   return (
     <motion.div
       animate={{ y: 0 }}
-      className="absolute bottom-0 z-50 flex w-full flex-col justify-between gap-4 border-t bg-background p-4 lg:flex-row"
+      className='absolute bottom-0 z-50 flex w-full flex-col justify-between gap-4 border-t bg-background p-4 lg:flex-row'
       exit={{ y: isMobile ? 200 : 77 }}
       initial={{ y: isMobile ? 200 : 77 }}
       transition={{ type: "spring", stiffness: 140, damping: 20 }}
     >
       <div>
         <div>You are viewing a previous version</div>
-        <div className="text-muted-foreground text-sm">
+        <div className='text-muted-foreground text-sm'>
           Restore this version to make edits
         </div>
       </div>
 
-      <div className="flex flex-row gap-4">
+      <div className='flex flex-row gap-4'>
         <Button
           disabled={isMutating}
           onClick={async () => {
@@ -58,7 +58,9 @@ export const VersionFooter = ({
             mutate(
               `/api/document?id=${artifact.documentId}`,
               await fetch(
-                `/api/document?id=${artifact.documentId}&timestamp=${getDocumentTimestampByIndex(
+                `/api/document?id=${
+                  artifact.documentId
+                }&timestamp=${getDocumentTimestampByIndex(
                   documents,
                   currentVersionIndex
                 )}`,
@@ -88,7 +90,7 @@ export const VersionFooter = ({
         >
           <div>Restore this version</div>
           {isMutating && (
-            <div className="animate-spin">
+            <div className='animate-spin'>
               <LoaderIcon />
             </div>
           )}
@@ -97,7 +99,7 @@ export const VersionFooter = ({
           onClick={() => {
             handleVersionChange("latest");
           }}
-          variant="outline"
+          variant='outline'
         >
           Back to latest version
         </Button>

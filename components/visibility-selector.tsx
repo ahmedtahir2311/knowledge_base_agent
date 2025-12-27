@@ -11,11 +11,11 @@ import {
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import { cn } from "@/lib/utils";
 import {
-  CheckCircleFillIcon,
+  CheckCircle as CheckCircleFillIcon,
   ChevronDownIcon,
   GlobeIcon,
   LockIcon,
-} from "./icons";
+} from "lucide-react";
 
 export type VisibilityType = "private" | "public";
 
@@ -69,20 +69,20 @@ export function VisibilitySelector({
         )}
       >
         <Button
-          className="hidden h-8 md:flex md:h-fit md:px-2"
-          data-testid="visibility-selector"
-          variant="outline"
+          className='hidden h-8 md:flex md:h-fit md:px-2'
+          data-testid='visibility-selector'
+          variant='outline'
         >
           {selectedVisibility?.icon}
-          <span className="md:sr-only">{selectedVisibility?.label}</span>
+          <span className='md:sr-only'>{selectedVisibility?.label}</span>
           <ChevronDownIcon />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="start" className="min-w-[300px]">
+      <DropdownMenuContent align='start' className='min-w-[300px]'>
         {visibilities.map((visibility) => (
           <DropdownMenuItem
-            className="group/item flex flex-row items-center justify-between gap-4"
+            className='group/item flex flex-row items-center justify-between gap-4'
             data-active={visibility.id === visibilityType}
             data-testid={`visibility-selector-item-${visibility.id}`}
             key={visibility.id}
@@ -91,15 +91,15 @@ export function VisibilitySelector({
               setOpen(false);
             }}
           >
-            <div className="flex flex-col items-start gap-1">
+            <div className='flex flex-col items-start gap-1'>
               {visibility.label}
               {visibility.description && (
-                <div className="text-muted-foreground text-xs">
+                <div className='text-muted-foreground text-xs'>
                   {visibility.description}
                 </div>
               )}
             </div>
-            <div className="text-foreground opacity-0 group-data-[active=true]/item:opacity-100 dark:text-foreground">
+            <div className='text-foreground opacity-0 group-data-[active=true]/item:opacity-100 dark:text-foreground'>
               <CheckCircleFillIcon />
             </div>
           </DropdownMenuItem>

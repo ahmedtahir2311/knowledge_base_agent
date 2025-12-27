@@ -27,7 +27,11 @@ import {
 import type { ChatMessage } from "@/lib/types";
 import { type ArtifactKind, artifactDefinitions } from "./artifact";
 import type { ArtifactToolbarItem } from "./create-artifact";
-import { ArrowUpIcon, StopIcon, SummarizeIcon } from "./icons";
+import {
+  ArrowUpIcon,
+  StopCircle as StopIcon,
+  BookOpenCheck as SummarizeIcon,
+} from "lucide-react";
 
 type ToolProps = {
   description: string;
@@ -121,8 +125,8 @@ const Tool = ({
         </motion.div>
       </TooltipTrigger>
       <TooltipContent
-        className="rounded-2xl bg-foreground p-3 px-4 text-background"
-        side="left"
+        className='rounded-2xl bg-foreground p-3 px-4 text-background'
+        side='left'
         sideOffset={16}
       >
         {description}
@@ -169,17 +173,17 @@ const ReadingLevelSelector = ({
   }, [yToLevel]);
 
   return (
-    <div className="relative flex flex-col items-center justify-end">
+    <div className='relative flex flex-col items-center justify-end'>
       {randomArr.map((id) => (
         <motion.div
           animate={{ opacity: 1 }}
-          className="flex size-[40px] flex-row items-center justify-center"
+          className='flex size-[40px] flex-row items-center justify-center'
           exit={{ opacity: 0 }}
           initial={{ opacity: 0 }}
           key={id}
           transition={{ delay: 0.1 }}
         >
-          <div className="size-2 rounded-full bg-muted-foreground/40" />
+          <div className='size-2 rounded-full bg-muted-foreground/40' />
         </motion.div>
       ))}
 
@@ -194,7 +198,7 @@ const ReadingLevelSelector = ({
                   "bg-background text-foreground": currentLevel === 2,
                 }
               )}
-              drag="y"
+              drag='y'
               dragConstraints={{ top: -dragConstraints, bottom: 0 }}
               dragElastic={0}
               dragMomentum={false}
@@ -232,8 +236,8 @@ const ReadingLevelSelector = ({
             </motion.div>
           </TooltipTrigger>
           <TooltipContent
-            className="rounded-2xl bg-foreground p-3 px-4 text-background text-sm"
-            side="left"
+            className='rounded-2xl bg-foreground p-3 px-4 text-background text-sm'
+            side='left'
             sideOffset={16}
           >
             {LEVELS[currentLevel]}
@@ -266,7 +270,7 @@ export const Tools = ({
   return (
     <motion.div
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col gap-1.5"
+      className='flex flex-col gap-1.5'
       exit={{ opacity: 0, scale: 0.95 }}
       initial={{ opacity: 0, scale: 0.95 }}
     >
@@ -396,7 +400,7 @@ const PureToolbar = ({
                 }
             : { opacity: 1, y: 0, height: 54, transition: { delay: 0 } }
         }
-        className="absolute right-6 bottom-6 flex cursor-pointer flex-col justify-end rounded-full border bg-background p-1.5 shadow-lg"
+        className='absolute right-6 bottom-6 flex cursor-pointer flex-col justify-end rounded-full border bg-background p-1.5 shadow-lg'
         exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
         initial={{ opacity: 0, y: -20, scale: 1 }}
         onAnimationComplete={() => {
@@ -426,10 +430,10 @@ const PureToolbar = ({
         {status === "streaming" ? (
           <motion.div
             animate={{ scale: 1.4 }}
-            className="p-3"
+            className='p-3'
             exit={{ scale: 1 }}
             initial={{ scale: 1 }}
-            key="stop-icon"
+            key='stop-icon'
             onClick={() => {
               stop();
               setMessages((messages) => messages);
@@ -440,7 +444,7 @@ const PureToolbar = ({
         ) : selectedTool === "adjust-reading-level" ? (
           <ReadingLevelSelector
             isAnimating={isAnimating}
-            key="reading-level-selector"
+            key='reading-level-selector'
             sendMessage={sendMessage}
             setSelectedTool={setSelectedTool}
           />
@@ -448,7 +452,7 @@ const PureToolbar = ({
           <Tools
             isAnimating={isAnimating}
             isToolbarVisible={isToolbarVisible}
-            key="tools"
+            key='tools'
             selectedTool={selectedTool}
             sendMessage={sendMessage}
             setIsToolbarVisible={setIsToolbarVisible}

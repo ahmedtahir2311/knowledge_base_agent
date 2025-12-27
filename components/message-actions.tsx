@@ -6,7 +6,12 @@ import { useCopyToClipboard } from "usehooks-ts";
 import type { Vote } from "@/lib/db/schema";
 import type { ChatMessage } from "@/lib/types";
 import { Action, Actions } from "./elements/actions";
-import { CopyIcon, PencilEditIcon, ThumbDownIcon, ThumbUpIcon } from "./icons";
+import {
+  CopyIcon,
+  PencilIcon as PencilEditIcon,
+  ThumbsDown as ThumbDownIcon,
+  ThumbsUpIcon as ThumbUpIcon,
+} from "lucide-react";
 
 export function PureMessageActions({
   chatId,
@@ -47,19 +52,19 @@ export function PureMessageActions({
   // User messages get edit (on hover) and copy actions
   if (message.role === "user") {
     return (
-      <Actions className="-mr-0.5 justify-end">
-        <div className="relative">
+      <Actions className='-mr-0.5 justify-end'>
+        <div className='relative'>
           {setMode && (
             <Action
-              className="-left-10 absolute top-0 opacity-0 transition-opacity focus-visible:opacity-100 group-hover/message:opacity-100"
-              data-testid="message-edit-button"
+              className='-left-10 absolute top-0 opacity-0 transition-opacity focus-visible:opacity-100 group-hover/message:opacity-100'
+              data-testid='message-edit-button'
               onClick={() => setMode("edit")}
-              tooltip="Edit"
+              tooltip='Edit'
             >
               <PencilEditIcon />
             </Action>
           )}
-          <Action onClick={handleCopy} tooltip="Copy">
+          <Action onClick={handleCopy} tooltip='Copy'>
             <CopyIcon />
           </Action>
         </div>
@@ -68,13 +73,13 @@ export function PureMessageActions({
   }
 
   return (
-    <Actions className="-ml-0.5">
-      <Action onClick={handleCopy} tooltip="Copy">
+    <Actions className='-ml-0.5'>
+      <Action onClick={handleCopy} tooltip='Copy'>
         <CopyIcon />
       </Action>
 
       <Action
-        data-testid="message-upvote"
+        data-testid='message-upvote'
         disabled={vote?.isUpvoted}
         onClick={() => {
           const upvote = fetch("/api/vote", {
@@ -117,13 +122,13 @@ export function PureMessageActions({
             error: "Failed to upvote response.",
           });
         }}
-        tooltip="Upvote Response"
+        tooltip='Upvote Response'
       >
         <ThumbUpIcon />
       </Action>
 
       <Action
-        data-testid="message-downvote"
+        data-testid='message-downvote'
         disabled={vote && !vote.isUpvoted}
         onClick={() => {
           const downvote = fetch("/api/vote", {
@@ -166,7 +171,7 @@ export function PureMessageActions({
             error: "Failed to downvote response.",
           });
         }}
-        tooltip="Downvote Response"
+        tooltip='Downvote Response'
       >
         <ThumbDownIcon />
       </Action>

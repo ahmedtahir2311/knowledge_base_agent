@@ -3,7 +3,10 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { toast as sonnerToast } from "sonner";
 import { cn } from "@/lib/utils";
-import { CheckCircleFillIcon, WarningIcon } from "./icons";
+import {
+  CheckCircle as CheckCircleFillIcon,
+  TriangleAlert as WarningIcon,
+} from "lucide-react";
 
 const iconsByType: Record<"success" | "error", ReactNode> = {
   success: <CheckCircleFillIcon />,
@@ -42,13 +45,13 @@ function Toast(props: ToastProps) {
   }, []);
 
   return (
-    <div className="flex toast-mobile:w-[356px] w-full justify-center">
+    <div className='flex toast-mobile:w-[356px] w-full justify-center'>
       <div
         className={cn(
           "flex toast-mobile:w-fit w-full flex-row gap-3 rounded-lg bg-zinc-100 p-3",
           multiLine ? "items-start" : "items-center"
         )}
-        data-testid="toast"
+        data-testid='toast'
         key={id}
       >
         <div
@@ -60,7 +63,7 @@ function Toast(props: ToastProps) {
         >
           {iconsByType[type]}
         </div>
-        <div className="text-sm text-zinc-950" ref={descriptionRef}>
+        <div className='text-sm text-zinc-950' ref={descriptionRef}>
           {description}
         </div>
       </div>

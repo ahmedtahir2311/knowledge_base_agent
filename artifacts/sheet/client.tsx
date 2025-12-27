@@ -7,7 +7,7 @@ import {
   RedoIcon,
   SparklesIcon,
   UndoIcon,
-} from "@/components/icons";
+} from "lucide-react";
 import { SpreadsheetEditor } from "@/components/sheet-editor";
 
 type Metadata = any;

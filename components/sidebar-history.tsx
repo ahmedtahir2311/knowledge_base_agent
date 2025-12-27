@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { Chat } from "@/lib/db/schema";
 import { fetcher } from "@/lib/utils";
-import { LoaderIcon } from "./icons";
+import { LoaderIcon } from "lucide-react";
 import { ChatItem } from "./sidebar-history-item";
 
 type GroupedChats = {
@@ -163,7 +163,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     return (
       <SidebarGroup>
         <SidebarGroupContent>
-          <div className="flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-zinc-500">
+          <div className='flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-zinc-500'>
             Login to save and revisit previous chats!
           </div>
         </SidebarGroupContent>
@@ -174,18 +174,18 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   if (isLoading) {
     return (
       <SidebarGroup>
-        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
+        <div className='px-2 py-1 text-sidebar-foreground/50 text-xs'>
           Today
         </div>
         <SidebarGroupContent>
-          <div className="flex flex-col">
+          <div className='flex flex-col'>
             {[44, 32, 28, 64, 52].map((item) => (
               <div
-                className="flex h-8 items-center gap-2 rounded-md px-2"
+                className='flex h-8 items-center gap-2 rounded-md px-2'
                 key={item}
               >
                 <div
-                  className="h-4 max-w-(--skeleton-width) flex-1 rounded-md bg-sidebar-accent-foreground/10"
+                  className='h-4 max-w-(--skeleton-width) flex-1 rounded-md bg-sidebar-accent-foreground/10'
                   style={
                     {
                       "--skeleton-width": `${item}%`,
@@ -204,7 +204,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     return (
       <SidebarGroup>
         <SidebarGroupContent>
-          <div className="flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-zinc-500">
+          <div className='flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-zinc-500'>
             Your conversations will appear here once you start chatting!
           </div>
         </SidebarGroupContent>
@@ -226,10 +226,10 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                 const groupedChats = groupChatsByDate(chatsFromHistory);
 
                 return (
-                  <div className="flex flex-col gap-6">
+                  <div className='flex flex-col gap-6'>
                     {groupedChats.today.length > 0 && (
                       <div>
-                        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
+                        <div className='px-2 py-1 text-sidebar-foreground/50 text-xs'>
                           Today
                         </div>
                         {groupedChats.today.map((chat) => (
@@ -249,7 +249,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
                     {groupedChats.yesterday.length > 0 && (
                       <div>
-                        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
+                        <div className='px-2 py-1 text-sidebar-foreground/50 text-xs'>
                           Yesterday
                         </div>
                         {groupedChats.yesterday.map((chat) => (
@@ -269,7 +269,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
                     {groupedChats.lastWeek.length > 0 && (
                       <div>
-                        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
+                        <div className='px-2 py-1 text-sidebar-foreground/50 text-xs'>
                           Last 7 days
                         </div>
                         {groupedChats.lastWeek.map((chat) => (
@@ -289,7 +289,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
                     {groupedChats.lastMonth.length > 0 && (
                       <div>
-                        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
+                        <div className='px-2 py-1 text-sidebar-foreground/50 text-xs'>
                           Last 30 days
                         </div>
                         {groupedChats.lastMonth.map((chat) => (
@@ -309,7 +309,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
                     {groupedChats.older.length > 0 && (
                       <div>
-                        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
+                        <div className='px-2 py-1 text-sidebar-foreground/50 text-xs'>
                           Older than last month
                         </div>
                         {groupedChats.older.map((chat) => (
@@ -340,8 +340,8 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
           />
 
           {!hasReachedEnd && (
-            <div className="mt-8 flex flex-row items-center gap-2 p-2 text-zinc-500 dark:text-zinc-400">
-              <div className="animate-spin">
+            <div className='mt-8 flex flex-row items-center gap-2 p-2 text-zinc-500 dark:text-zinc-400'>
+              <div className='animate-spin'>
                 <LoaderIcon />
               </div>
               <div>Loading Chats...</div>
