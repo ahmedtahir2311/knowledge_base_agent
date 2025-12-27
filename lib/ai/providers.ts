@@ -93,8 +93,8 @@ export function getTitleModel() {
   if (useGateway) {
     return gateway.languageModel("anthropic/claude-haiku-4.5");
   } else {
-    // Use GPT-4o-mini for title generation (fast and cheap)
-    return openai!.languageModel("gpt-4o-mini");
+    // Use GPT-5-mini for title generation (user specified)
+    return openai!.languageModel("gpt-5-nano-2025-08-07");
   }
 }
 
@@ -111,6 +111,6 @@ export function getArtifactModel() {
     return gateway.languageModel("anthropic/claude-haiku-4.5");
   } else {
     // Use GPT-4o-mini for artifact generation (fast and cheap)
-    return openai!.languageModel("gpt-4o-mini");
+    return openai!.languageModel("o4-mini-2025-04-16");
   }
 }
