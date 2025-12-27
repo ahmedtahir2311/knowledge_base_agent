@@ -62,7 +62,7 @@ const SidebarProvider = React.forwardRef<
 >(
   (
     {
-      defaultOpen = true,
+      defaultOpen = false,
       open: openProp,
       onOpenChange: setOpenProp,
       className,
@@ -201,9 +201,9 @@ const Sidebar = React.forwardRef<
       return (
         <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
           <SheetContent
-            className="w-[var(--sidebar-width)] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            data-mobile="true"
-            data-sidebar="sidebar"
+            className='w-[var(--sidebar-width)] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden'
+            data-mobile='true'
+            data-sidebar='sidebar'
             side={side}
             style={
               {
@@ -211,11 +211,11 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
           >
-            <SheetHeader className="sr-only">
+            <SheetHeader className='sr-only'>
               <SheetTitle>Sidebar</SheetTitle>
               <SheetDescription>Displays the mobile sidebar.</SheetDescription>
             </SheetHeader>
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className='flex h-full w-full flex-col'>{children}</div>
           </SheetContent>
         </Sheet>
       );
@@ -223,7 +223,7 @@ const Sidebar = React.forwardRef<
 
     return (
       <div
-        className="group peer hidden text-sidebar-foreground md:block"
+        className='group peer hidden text-sidebar-foreground md:block'
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-side={side}
         data-state={state}
@@ -256,8 +256,8 @@ const Sidebar = React.forwardRef<
           {...props}
         >
           <div
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
-            data-sidebar="sidebar"
+            className='flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow'
+            data-sidebar='sidebar'
           >
             {children}
           </div>
@@ -277,18 +277,18 @@ const SidebarTrigger = React.forwardRef<
   return (
     <Button
       className={cn("h-7 w-7", className)}
-      data-sidebar="trigger"
+      data-sidebar='trigger'
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
       }}
       ref={ref}
-      size="icon"
-      variant="ghost"
+      size='icon'
+      variant='ghost'
       {...props}
     >
       <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className='sr-only'>Toggle Sidebar</span>
     </Button>
   );
 });
@@ -302,7 +302,7 @@ const SidebarRail = React.forwardRef<
 
   return (
     <button
-      aria-label="Toggle Sidebar"
+      aria-label='Toggle Sidebar'
       className={cn(
         "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex",
         "[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize",
@@ -312,11 +312,11 @@ const SidebarRail = React.forwardRef<
         "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
         className
       )}
-      data-sidebar="rail"
+      data-sidebar='rail'
       onClick={toggleSidebar}
       ref={ref}
       tabIndex={-1}
-      title="Toggle Sidebar"
+      title='Toggle Sidebar'
       {...props}
     />
   );
@@ -351,7 +351,7 @@ const SidebarInput = React.forwardRef<
         "h-8 w-full bg-background shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
         className
       )}
-      data-sidebar="input"
+      data-sidebar='input'
       ref={ref}
       {...props}
     />
@@ -366,7 +366,7 @@ const SidebarHeader = React.forwardRef<
   return (
     <div
       className={cn("flex flex-col gap-2 p-2", className)}
-      data-sidebar="header"
+      data-sidebar='header'
       ref={ref}
       {...props}
     />
@@ -381,7 +381,7 @@ const SidebarFooter = React.forwardRef<
   return (
     <div
       className={cn("flex flex-col gap-2 p-2", className)}
-      data-sidebar="footer"
+      data-sidebar='footer'
       ref={ref}
       {...props}
     />
@@ -396,7 +396,7 @@ const SidebarSeparator = React.forwardRef<
   return (
     <Separator
       className={cn("mx-2 w-auto bg-sidebar-border", className)}
-      data-sidebar="separator"
+      data-sidebar='separator'
       ref={ref}
       {...props}
     />
@@ -414,7 +414,7 @@ const SidebarContent = React.forwardRef<
         "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
         className
       )}
-      data-sidebar="content"
+      data-sidebar='content'
       ref={ref}
       {...props}
     />
@@ -429,7 +429,7 @@ const SidebarGroup = React.forwardRef<
   return (
     <div
       className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
-      data-sidebar="group"
+      data-sidebar='group'
       ref={ref}
       {...props}
     />
@@ -450,7 +450,7 @@ const SidebarGroupLabel = React.forwardRef<
         "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
         className
       )}
-      data-sidebar="group-label"
+      data-sidebar='group-label'
       ref={ref}
       {...props}
     />
@@ -473,7 +473,7 @@ const SidebarGroupAction = React.forwardRef<
         "group-data-[collapsible=icon]:hidden",
         className
       )}
-      data-sidebar="group-action"
+      data-sidebar='group-action'
       ref={ref}
       {...props}
     />
@@ -487,7 +487,7 @@ const SidebarGroupContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     className={cn("w-full text-sm", className)}
-    data-sidebar="group-content"
+    data-sidebar='group-content'
     ref={ref}
     {...props}
   />
@@ -500,7 +500,7 @@ const SidebarMenu = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ul
     className={cn("flex w-full min-w-0 flex-col gap-1", className)}
-    data-sidebar="menu"
+    data-sidebar='menu'
     ref={ref}
     {...props}
   />
@@ -513,7 +513,7 @@ const SidebarMenuItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <li
     className={cn("group/menu-item relative", className)}
-    data-sidebar="menu-item"
+    data-sidebar='menu-item'
     ref={ref}
     {...props}
   />
@@ -569,7 +569,7 @@ const SidebarMenuButton = React.forwardRef<
       <Comp
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         data-active={isActive}
-        data-sidebar="menu-button"
+        data-sidebar='menu-button'
         data-size={size}
         ref={ref}
         {...props}
@@ -590,9 +590,9 @@ const SidebarMenuButton = React.forwardRef<
       <Tooltip>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent
-          align="center"
+          align='center'
           hidden={state !== "collapsed" || isMobile}
-          side="right"
+          side='right'
           {...tooltip}
         />
       </Tooltip>
@@ -624,7 +624,7 @@ const SidebarMenuAction = React.forwardRef<
           "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
         className
       )}
-      data-sidebar="menu-action"
+      data-sidebar='menu-action'
       ref={ref}
       {...props}
     />
@@ -646,7 +646,7 @@ const SidebarMenuBadge = React.forwardRef<
       "group-data-[collapsible=icon]:hidden",
       className
     )}
-    data-sidebar="menu-badge"
+    data-sidebar='menu-badge'
     ref={ref}
     {...props}
   />
@@ -667,19 +667,19 @@ const SidebarMenuSkeleton = React.forwardRef<
   return (
     <div
       className={cn("flex h-8 items-center gap-2 rounded-md px-2", className)}
-      data-sidebar="menu-skeleton"
+      data-sidebar='menu-skeleton'
       ref={ref}
       {...props}
     >
       {showIcon && (
         <Skeleton
-          className="size-4 rounded-md"
-          data-sidebar="menu-skeleton-icon"
+          className='size-4 rounded-md'
+          data-sidebar='menu-skeleton-icon'
         />
       )}
       <Skeleton
-        className="h-4 max-w-[var(--skeleton-width)] flex-1"
-        data-sidebar="menu-skeleton-text"
+        className='h-4 max-w-[var(--skeleton-width)] flex-1'
+        data-sidebar='menu-skeleton-text'
         style={
           {
             "--skeleton-width": width,
@@ -701,7 +701,7 @@ const SidebarMenuSub = React.forwardRef<
       "group-data-[collapsible=icon]:hidden",
       className
     )}
-    data-sidebar="menu-sub"
+    data-sidebar='menu-sub'
     ref={ref}
     {...props}
   />
@@ -735,7 +735,7 @@ const SidebarMenuSubButton = React.forwardRef<
         className
       )}
       data-active={isActive}
-      data-sidebar="menu-sub-button"
+      data-sidebar='menu-sub-button'
       data-size={size}
       ref={ref}
       {...props}

@@ -15,16 +15,18 @@ type SuggestedActionsProps = {
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
   const suggestedActions = [
-    "What are the advantages of using Next.js?",
+    "What are the advantages of using Next.js",
     "Write code to demonstrate Dijkstra's algorithm",
-    "Help me write an essay about Silicon Valley",
-    "What is the weather in San Francisco?",
+    "Help me write an essay about Silicon Valley.",
+    "What is the weather in San Francisco and New York",
+    "Explain in detail the theory of relativity",
+    "Draft a packing list for a trip to Japan",
   ];
 
   return (
     <div
-      className="grid w-full gap-2 sm:grid-cols-2"
-      data-testid="suggested-actions"
+      className='fixed top-1/2 left-1/2 z-10 grid w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 gap-4 px-4 sm:grid-cols-3'
+      data-testid='suggested-actions'
     >
       {suggestedActions.map((suggestedAction, index) => (
         <motion.div
@@ -35,7 +37,7 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
           transition={{ delay: 0.05 * index }}
         >
           <Suggestion
-            className="h-auto w-full whitespace-normal p-3 text-left"
+            className='flex h-auto w-full flex-col items-start justify-start rounded-xl border bg-background p-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent/50 hover:shadow-md whitespace-normal break-words'
             onClick={(suggestion) => {
               window.history.pushState({}, "", `/chat/${chatId}`);
               sendMessage({
@@ -45,7 +47,7 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
             }}
             suggestion={suggestedAction}
           >
-            {suggestedAction}
+            <span className='text-left'>{suggestedAction}</span>
           </Suggestion>
         </motion.div>
       ))}
