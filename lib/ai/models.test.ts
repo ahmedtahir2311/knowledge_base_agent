@@ -9,11 +9,11 @@ const mockUsage = {
 
 export const chatModel = new MockLanguageModelV3({
   doGenerate: async () => ({
-    finishReason: "stop" as const,
+    finishReason: "stop",
     usage: mockUsage,
     content: [{ type: "text", text: "Hello, world!" }],
     warnings: [],
-  }),
+  } as any),
   doStream: async ({ prompt }) => ({
     stream: simulateReadableStream({
       chunkDelayInMs: 500,

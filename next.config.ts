@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        //https://nextjs.org/docs/messages/next-image-unconfigured-host
+        //https://nextjs.org/doc@/components/organisms/messages/next-image-unconfigured-host
         hostname: "*.public.blob.vercel-storage.com",
       },
     ],
