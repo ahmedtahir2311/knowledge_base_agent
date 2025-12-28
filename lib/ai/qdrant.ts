@@ -35,6 +35,14 @@ export async function initQdrantCollection() {
     });
     console.log("Verified payload index for document_id");
 
+    // Create payload index for user_id to allow filtering by user
+    await qdrantClient.createPayloadIndex(QDRANT_COLLECTION_NAME, {
+      field_name: "user_id",
+      field_schema: "keyword",
+      wait: true,
+    });
+    console.log("Verified payload index for user_id");
+
   } catch (error) {
     console.error("Failed to check/create Qdrant collection:", error);
     throw error;
@@ -46,24 +54,38 @@ export async function retrieveRelevantChunks(
   userId: string,
   limit = 5
 ) {
-  const results = await qdrantClient.search(QDRANT_COLLECTION_NAME, {
-    vector: embedding,
-    limit,
-    filter: {
-      must: [
-        {
-          key: "user_id",
-          match: {
-            value: userId,
+  console.log(`Searching Qdrant for user: ${userId}`);
+  
+  try {
+    const results = await qdrantClient.search(QDRANT_COLLECTION_NAME, {
+      vector: embedding,
+      limit,
+      filter: {
+        must: [
+          {
+            key: "user_id",
+            match: {
+              value: userId,
+            },
           },
-        },
-      ],
-    },
-    with_payload: true,
-  });
+        ],
+      },
+      with_payload: true,
+    });
 
-  return results;
-  return results;
+    console.log(`Qdrant search found ${results.length} results`);
+    if (results.length > 0) {
+        console.log(`Top result score: ${results[0].score}`);
+    }
+
+    return results;
+  } catch (error: any) {
+    console.error("Failed to search Qdrant:", error);
+    if (error?.data) {
+        console.error("Qdrant search error details:", JSON.stringify(error.data, null, 2));
+    }
+    throw error;
+  }
 }
 
 export async function deleteDocumentsByDocumentId(documentId: string) {
