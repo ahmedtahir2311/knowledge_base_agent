@@ -5,7 +5,7 @@ import type { User } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { Moon, PlusIcon, Sun, UserIcon } from "lucide-react";
+import { Moon, PlusIcon, Sun, UserIcon, Book } from "lucide-react";
 import { SidebarToggle } from "@/components/molecules/sidebar-toggle";
 import { Button } from "@/components/atoms/button";
 import {
@@ -55,6 +55,18 @@ export function ChatNavbar({
         >
           <PlusIcon className='size-5' />
           <span className='sr-only'>New Chat</span>
+        </Button>
+        <Button
+          className='md:h-8 md:w-8'
+          disabled={isLoading}
+          onClick={() => {
+            router.push("/knowledge");
+          }}
+          size='icon'
+          variant='ghost'
+        >
+          <Book className='size-5' />
+          <span className='sr-only'>Knowledge Base</span>
         </Button>
 
         <SidebarToggle />

@@ -20,7 +20,10 @@ import { createDocument } from "@/lib/ai/tools/create-document";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { updateDocument } from "@/lib/ai/tools/update-document";
+import { generateEmbedding } from "@/lib/ai/embedding";
+import { retrieveRelevantChunks } from "@/lib/ai/qdrant";
 import { isProductionEnvironment } from "@/lib/constants";
+
 import {
   createStreamId,
   deleteChatById,
@@ -136,6 +139,30 @@ export async function POST(request: Request) {
       country,
     };
 
+    let context = "";
+    if (message?.role === "user") {
+      const textContent = message.parts
+        .filter((p: any) => p.type === "text")
+        .map((p: any) => p.text)
+        .join("\n");
+
+      if (textContent) {
+        try {
+          const embedding = await generateEmbedding(textContent);
+          const chunks = await retrieveRelevantChunks(
+            embedding,
+            session.user.id
+          );
+          context = chunks
+            .map((c) => c.payload?.content)
+            .filter(Boolean)
+            .join("\n\n---\n\n");
+        } catch (error) {
+          console.error("RAG Retrieval failed:", error);
+        }
+      }
+    }
+
     // Only save user messages to the database (not tool approval responses)
     if (message?.role === "user") {
       await saveMessages({
@@ -176,7 +203,7 @@ export async function POST(request: Request) {
 
         const result = streamText({
           model: getLanguageModel(selectedChatModel),
-          system: systemPrompt({ selectedChatModel, requestHints }),
+          system: systemPrompt({ selectedChatModel, requestHints, context }),
           messages: await convertToModelMessages(uiMessages),
           stopWhen: stepCountIs(5),
           experimental_activeTools: isReasoningModel

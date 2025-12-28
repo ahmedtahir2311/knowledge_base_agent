@@ -2,6 +2,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import {
   boolean,
   foreignKey,
+  integer,
   json,
   pgTable,
   primaryKey,
@@ -168,3 +169,31 @@ export const stream = pgTable(
 );
 
 export type Stream = InferSelectModel<typeof stream>;
+
+export const knowledgeDocument = pgTable("KnowledgeDocument", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  title: text("title").notNull(),
+  blobUrl: text("blobUrl").notNull(),
+  status: varchar("status", { enum: ["processing", "completed", "failed"] })
+    .notNull()
+    .default("processing"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  metadata: json("metadata"),
+});
+
+export type KnowledgeDocument = InferSelectModel<typeof knowledgeDocument>;
+
+export const documentChunk = pgTable("DocumentChunk", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  documentId: uuid("documentId")
+    .notNull()
+    .references(() => knowledgeDocument.id, { onDelete: "cascade" }),
+  chunkIndex: integer("chunkIndex").notNull(),
+  content: text("content").notNull(),
+  tokenCount: integer("tokenCount").notNull(),
+});
+
+export type DocumentChunk = InferSelectModel<typeof documentChunk>;

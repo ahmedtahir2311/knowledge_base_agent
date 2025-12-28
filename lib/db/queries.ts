@@ -12,8 +12,6 @@ import {
   lt,
   type SQL,
 } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import type { ArtifactKind } from "@/components/artifacts/definitions";
 import type { VisibilityType } from "@/components/molecules/visibility-selector";
 import { ChatSDKError } from "../errors";
@@ -23,6 +21,7 @@ import {
   chat,
   type DBMessage,
   document,
+  knowledgeDocument,
   message,
   type Suggestion,
   stream,
@@ -31,6 +30,24 @@ import {
   user,
   vote,
 } from "./schema";
+
+// ... existing code ...
+
+export async function deleteKnowledgeDocumentById({ id }: { id: string }) {
+  try {
+    const [deletedDoc] = await db
+      .delete(knowledgeDocument)
+      .where(eq(knowledgeDocument.id, id))
+      .returning();
+
+    return deletedDoc;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to delete knowledge document by id"
+    );
+  }
+}
 import { generateHashedPassword } from "./utils";
 
 // Optionally, if not using email/pass login, you can
@@ -38,8 +55,9 @@ import { generateHashedPassword } from "./utils";
 // https://authjs.dev/reference/adapter/drizzle
 
 // biome-ignore lint: Forbidden non-null assertion.
-const client = postgres(process.env.POSTGRES_URL!);
-const db = drizzle(client);
+import { db } from "./drizzle";
+// const client = postgres(process.env.POSTGRES_URL!);
+// const db = drizzle(client);
 
 export async function getUser(email: string): Promise<User[]> {
   try {

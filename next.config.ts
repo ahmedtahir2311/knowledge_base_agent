@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "100mb",
+    },
+    // @ts-ignore
+    middlewareClientMaxBodySize: "100mb",
+  },
 };
 
 export default nextConfig;
