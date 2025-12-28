@@ -123,6 +123,11 @@ const PurePreviewMessage = ({
             }
 
             if (type === "text") {
+              // Hide text content if this message contains a createDocument tool call
+              // to prevent duplicate display (artifact UI + raw text)
+              if (hasCreateCall) {
+                return null;
+              }
               if (mode === "view") {
                 return (
                   <div key={key}>

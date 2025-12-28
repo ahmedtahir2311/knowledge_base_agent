@@ -98,6 +98,9 @@ export function DocumentPreview({
         console.log("DocumentPreview falling back to streaming artifact", {
           kind: artifact.kind,
           id: artifact.documentId,
+          contentLength: artifact.content?.length || 0,
+          contentPreview: artifact.content?.substring(0, 100) || "EMPTY",
+          fullContent: artifact.content,
         });
         return {
           title: artifact.title,
@@ -257,6 +260,15 @@ const DocumentHeader = memo(PureDocumentHeader, (prevProps, nextProps) => {
 
 const DocumentContent = ({ document }: { document: Document }) => {
   const { artifact } = useArtifact();
+
+  console.log("[DocumentContent] Rendering:", {
+    documentKind: document.kind,
+    documentContentLength: document.content?.length || 0,
+    documentContentPreview: document.content?.substring(0, 100),
+    artifactStatus: artifact.status,
+    artifactContentLength: artifact.content?.length || 0,
+    artifactContentPreview: artifact.content?.substring(0, 100),
+  });
 
   const containerClassName = cn(
     "h-[257px] overflow-y-scroll rounded-b-2xl border border-t-0 dark:border-zinc-700 dark:bg-muted",

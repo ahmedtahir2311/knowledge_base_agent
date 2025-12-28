@@ -72,9 +72,9 @@ function PureEditor({
         editorRef.current = null;
       }
     };
-    // NOTE: we only want to run this effect once
-    // eslint-disable-next-line
-  }, [content]);
+    // NOTE: we only want to run this effect once on mount, not on content changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (editorRef.current) {
@@ -97,6 +97,9 @@ function PureEditor({
       );
 
       if (status === "streaming") {
+        console.log("[TextEditor] Streaming update:", {
+          contentLength: content.length,
+        });
         const newDocument = buildDocumentFromContent(content);
 
         const transaction = editorRef.current.state.tr.replaceWith(
@@ -111,6 +114,7 @@ function PureEditor({
       }
 
       if (currentContent !== content) {
+        console.log("[TextEditor] Content sync update");
         const newDocument = buildDocumentFromContent(content);
 
         const transaction = editorRef.current.state.tr.replaceWith(
@@ -146,19 +150,32 @@ function PureEditor({
   }, [suggestions, content]);
 
   return (
-    <div className="prose dark:prose-invert relative" ref={containerRef} />
+    <div className='prose dark:prose-invert relative' ref={containerRef} />
   );
 }
 
 function areEqual(prevProps: EditorProps, nextProps: EditorProps) {
-  return (
-    prevProps.suggestions === nextProps.suggestions &&
-    prevProps.currentVersionIndex === nextProps.currentVersionIndex &&
-    prevProps.isCurrentVersion === nextProps.isCurrentVersion &&
-    !(prevProps.status === "streaming" && nextProps.status === "streaming") &&
-    prevProps.content === nextProps.content &&
-    prevProps.onSaveContent === nextProps.onSaveContent
-  );
+  // Return false (re-render) if any of these conditions are true
+  if (prevProps.suggestions !== nextProps.suggestions) {
+    return false;
+  }
+  if (prevProps.currentVersionIndex !== nextProps.currentVersionIndex) {
+    return false;
+  }
+  if (prevProps.isCurrentVersion !== nextProps.isCurrentVersion) {
+    return false;
+  }
+  // CRITICAL: Always re-render when both statuses are "streaming"
+  if (prevProps.status === "streaming" && nextProps.status === "streaming") {
+    return false;
+  }
+  // Re-render if content has changed
+  if (prevProps.content !== nextProps.content) {
+    return false;
+  }
+
+  // Only skip re-render if absolutely nothing has changed
+  return true;
 }
 
 export const Editor = memo(PureEditor, areEqual);

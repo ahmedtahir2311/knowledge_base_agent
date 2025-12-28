@@ -1,21 +1,18 @@
 "use client";
 
-import { defaultMarkdownSerializer } from "prosemirror-markdown";
-import { DOMParser, type Node } from "prosemirror-model";
+import {
+  defaultMarkdownParser,
+  defaultMarkdownSerializer,
+} from "prosemirror-markdown";
+import { type Node } from "prosemirror-model";
 import { Decoration, DecorationSet, type EditorView } from "prosemirror-view";
-import { renderToString } from "react-dom/server";
 
-import { Response } from "@/components/molecules/markdown-response";
-
-import { documentSchema } from "./config";
 import { createSuggestionWidget, type UISuggestion } from "./suggestions";
 
 export const buildDocumentFromContent = (content: string) => {
-  const parser = DOMParser.fromSchema(documentSchema);
-  const stringFromMarkdown = renderToString(<Response>{content}</Response>);
-  const tempContainer = document.createElement("div");
-  tempContainer.innerHTML = stringFromMarkdown;
-  return parser.parse(tempContainer);
+  // Use prosemirror-markdown's default parser to convert markdown to ProseMirror document
+  // This works correctly for streaming content, unlike renderToString which fails for client-side components
+  return defaultMarkdownParser.parse(content);
 };
 
 export const buildContentFromDocument = (document: Node) => {
