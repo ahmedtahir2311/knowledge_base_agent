@@ -204,7 +204,6 @@ export function Chat({
           chatId={id}
           isLoading={status === "submitted" || status === "streaming"}
           isReadonly={isReadonly}
-          selectedVisibilityType={visibilityType}
           user={user}
         />
 
@@ -228,9 +227,6 @@ export function Chat({
               chatId={id}
               input={input}
               messages={messages}
-              onModelChange={setCurrentModelId}
-              selectedModelId={currentModelId}
-              selectedVisibilityType={visibilityType}
               sendMessage={sendMessage}
               setAttachments={setAttachments}
               setInput={setInput}
@@ -250,8 +246,6 @@ export function Chat({
         isReadonly={isReadonly}
         messages={messages}
         regenerate={regenerate}
-        selectedModelId={currentModelId}
-        selectedVisibilityType={visibilityType}
         sendMessage={sendMessage}
         setAttachments={setAttachments}
         setInput={setInput}

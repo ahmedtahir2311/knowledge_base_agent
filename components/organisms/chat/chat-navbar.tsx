@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { Moon, PlusIcon, Sun, UserIcon, Book } from "lucide-react";
-import { SidebarToggle } from "@/components/molecules/sidebar-toggle";
 import { Button } from "@/components/atoms/button";
 import {
   DropdownMenu,
@@ -14,20 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/molecules/dropdown-menu";
 import { guestRegex } from "@/lib/constants";
-import {
-  VisibilitySelector,
-  type VisibilityType,
-} from "@/components/molecules/visibility-selector";
 
 export function ChatNavbar({
   chatId,
-  selectedVisibilityType,
   isReadonly,
   user,
   isLoading,
 }: {
   chatId: string;
-  selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
   user: User | undefined;
   isLoading: boolean;
@@ -56,26 +49,6 @@ export function ChatNavbar({
           <PlusIcon className='size-5' />
           <span className='sr-only'>New Chat</span>
         </Button>
-        <Button
-          className='md:h-8 md:w-8'
-          disabled={isLoading}
-          onClick={() => {
-            router.push("/knowledge");
-          }}
-          size='icon'
-          variant='ghost'
-        >
-          <Book className='size-5' />
-          <span className='sr-only'>Knowledge Base</span>
-        </Button>
-
-        <SidebarToggle />
-        {!isReadonly && (
-          <VisibilitySelector
-            chatId={chatId}
-            selectedVisibilityType={selectedVisibilityType}
-          />
-        )}
       </div>
 
       {/* Right side: User icon + Theme toggle */}
@@ -94,7 +67,6 @@ export function ChatNavbar({
           <span className='sr-only'>Toggle theme</span>
         </Button>
 
-        {/* User Icon */}
         {/* User Icon */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -124,20 +96,6 @@ export function ChatNavbar({
                 <div className='px-2 py-1 text-xs font-medium text-muted-foreground'>
                   {isGuest ? "Guest User" : "Not Logged In"}
                 </div>
-                <Button
-                  className='w-full justify-start h-8 text-sm'
-                  onClick={() => router.push("/login")}
-                  variant='ghost'
-                >
-                  Sign In
-                </Button>
-                <Button
-                  className='w-full justify-start h-8 text-sm'
-                  onClick={() => router.push("/register")}
-                  variant='default'
-                >
-                  Sign Up
-                </Button>
               </div>
             )}
           </DropdownMenuContent>

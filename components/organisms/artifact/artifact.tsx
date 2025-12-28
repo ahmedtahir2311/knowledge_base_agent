@@ -23,7 +23,6 @@ import { MultimodalInput } from "@/components/organisms/multimodal-input";
 import { Toolbar } from "./toolbar";
 import { useSidebar } from "@/components/organisms/sidebar";
 import { VersionFooter } from "@/components/molecules/version-footer";
-import type { VisibilityType } from "@/components/molecules/visibility-selector";
 import {
   artifactDefinitions,
   type ArtifactKind,
@@ -45,8 +44,6 @@ function PureArtifact({
   regenerate,
   votes,
   isReadonly,
-  selectedVisibilityType,
-  selectedModelId,
 }: {
   addToolApprovalResponse: UseChatHelpers<ChatMessage>["addToolApprovalResponse"];
   chatId: string;
@@ -62,8 +59,6 @@ function PureArtifact({
   sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
   regenerate: UseChatHelpers<ChatMessage>["regenerate"];
   isReadonly: boolean;
-  selectedVisibilityType: VisibilityType;
-  selectedModelId: string;
 }) {
   const { artifact, setArtifact, metadata, setMetadata } = useArtifact();
 
@@ -318,8 +313,6 @@ function PureArtifact({
                     className='bg-background dark:bg-muted'
                     input={input}
                     messages={messages}
-                    selectedModelId={selectedModelId}
-                    selectedVisibilityType={selectedVisibilityType}
                     sendMessage={sendMessage}
                     setAttachments={setAttachments}
                     setInput={setInput}
@@ -500,9 +493,6 @@ export const Artifact = memo(PureArtifact, (prevProps, nextProps) => {
     return false;
   }
   if (!equal(prevProps.messages, nextProps.messages.length)) {
-    return false;
-  }
-  if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType) {
     return false;
   }
 

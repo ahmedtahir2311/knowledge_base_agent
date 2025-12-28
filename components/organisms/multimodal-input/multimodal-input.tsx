@@ -28,9 +28,6 @@ import {
 import { ArrowUpIcon, Loader2Icon } from "lucide-react";
 import { PreviewAttachment } from "@/components/molecules/preview-attachment";
 import { SuggestedActions } from "@/components/molecules/suggested-actions";
-import type { VisibilityType } from "@/components/molecules/visibility-selector";
-import { AttachmentsButton } from "./attachments-button";
-import { ModelSelectorCompact } from "./model-selector-compact";
 import { StopButton } from "./stop-button";
 
 function PureMultimodalInput({
@@ -45,9 +42,6 @@ function PureMultimodalInput({
   setMessages,
   sendMessage,
   className,
-  selectedVisibilityType,
-  selectedModelId,
-  onModelChange,
 }: {
   chatId: string;
   input: string;
@@ -60,9 +54,6 @@ function PureMultimodalInput({
   setMessages: UseChatHelpers<ChatMessage>["setMessages"];
   sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
   className?: string;
-  selectedVisibilityType: VisibilityType;
-  selectedModelId: string;
-  onModelChange?: (modelId: string) => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
@@ -282,7 +273,7 @@ function PureMultimodalInput({
         uploadQueue.length === 0 && (
           <SuggestedActions
             chatId={chatId}
-            selectedVisibilityType={selectedVisibilityType}
+            selectedVisibilityType='private'
             sendMessage={sendMessage}
           />
         )}
@@ -376,17 +367,7 @@ function PureMultimodalInput({
         </div>
 
         <PromptInputToolbar>
-          <PromptInputTools>
-            <AttachmentsButton
-              fileInputRef={fileInputRef}
-              selectedModelId={selectedModelId}
-              status={status}
-            />
-            <ModelSelectorCompact
-              onModelChange={onModelChange}
-              selectedModelId={selectedModelId}
-            />
-          </PromptInputTools>
+          <div className='hidden' />
         </PromptInputToolbar>
       </PromptInput>
     </div>
@@ -405,13 +386,6 @@ export const MultimodalInput = memo(
     if (!equal(prevProps.attachments, nextProps.attachments)) {
       return false;
     }
-    if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType) {
-      return false;
-    }
-    if (prevProps.selectedModelId !== nextProps.selectedModelId) {
-      return false;
-    }
-
     return true;
   }
 );

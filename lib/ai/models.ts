@@ -1,44 +1,51 @@
 // Latest OpenAI models
-export const DEFAULT_CHAT_MODEL = "openai/o4-mini-2025-04-16";
+export const DEFAULT_CHAT_MODEL = "openai/gpt-4.1-mini-2025-04-14";
+
+export type ChatModelTier = "nano" | "mini" | "simple" | "reasoning";
 
 export type ChatModel = {
   id: string;
   name: string;
   provider: string;
+  tier: ChatModelTier;
   description: string;
 };
 
 export const chatModels: ChatModel[] = [
-  // Latest OpenAI Models
+  // 🟢 NANO — ultra cheap, utility, background tasks
+  {
+    id: "openai/gpt-4.1-nano-2025-04-14",
+    name: "GPT-4.1 Nano",
+    provider: "openai",
+    tier: "nano",
+    description: "Ultra-low cost model for simple tasks, tagging, summaries, and automation",
+  },
+
+  // 🔵 MINI — fast + cheap for most apps
+  {
+    id: "openai/gpt-4.1-mini-2025-04-14",
+    name: "GPT-4.1 Mini",
+    provider: "openai",
+    tier: "mini",
+    description: "Fast, cost-effective model for chat, extraction, and light reasoning",
+  },
+
+  // 🟣 SIMPLE — default chat experience
+  {
+    id: "openai/gpt-4.1-2025-04-14",
+    name: "GPT-4.1",
+    provider: "openai",
+    tier: "simple",
+    description: "General-purpose high-quality chat and instruction following",
+  },
+
+  // 🔴 REASONING — thinking / planning / architecture
   {
     id: "openai/o4-mini-2025-04-16",
-    name: "O4 Mini",
+    name: "O4 Mini (Reasoning)",
     provider: "openai",
-    description: "Smallest, fastest, and most cost-effective reasoning model",
-  },
-  {
-    id: "openai/gpt-4o-mini",
-    name: "GPT-4o Mini",
-    provider: "openai",
-    description: "Fast, affordable, and intelligent for everyday tasks",
-  },
-  {
-    id: "openai/gpt-4o",
-    name: "GPT-4o",
-    provider: "openai",
-    description: "Most capable multimodal model - text, vision, and audio",
-  },
-  {
-    id: "openai/o1-mini",
-    name: "O1 Mini",
-    provider: "openai",
-    description: "Fast reasoning model for STEM tasks",
-  },
-  {
-    id: "openai/o1",
-    name: "O1",
-    provider: "openai",
-    description: "Advanced reasoning model for complex problems",
+    tier: "reasoning",
+    description: "Cost-effective reasoning model for planning, debugging, and complex decisions",
   },
 ];
 
