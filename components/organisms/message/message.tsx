@@ -112,6 +112,49 @@ const PurePreviewMessage = ({
             const { type } = part;
             const key = `message-${message.id}-part-${index}`;
 
+            // Inject fake reasoning if this is the first part, we are loading, and no reasoning part exists
+            if (
+              index === 0 &&
+              isLoading &&
+              !message.parts.some((p) => p.type === "reasoning")
+            ) {
+              return (
+                <div key={key + "-fake-reasoning"}>
+                  <MessageReasoning
+                    isLoading={true}
+                    reasoning='Analysis in progress...'
+                  />
+                  {type === "text" && mode === "view" ? (
+                    <div key={key}>
+                      <MessageContent
+                        className={cn({
+                          "wrap-break-word w-fit rounded-2xl px-3 py-2 text-right text-white":
+                            message.role === "user",
+                          "bg-transparent px-0 py-0 text-left":
+                            message.role === "assistant",
+                        })}
+                        data-testid='message-content'
+                        style={
+                          message.role === "user"
+                            ? { backgroundColor: "#006cff" }
+                            : undefined
+                        }
+                      >
+                        <Response
+                          className={cn({
+                            "text-white prose-p:text-white prose-headings:text-white prose-li:text-white prose-strong:text-white prose-code:text-white prose-a:text-white prose-blockquote:text-white prose-td:text-white prose-th:text-white prose-tr:text-white":
+                              message.role === "user",
+                          })}
+                        >
+                          {sanitizeText(part.text)}
+                        </Response>
+                      </MessageContent>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            }
+
             if (type === "reasoning" && part.text?.trim().length > 0) {
               return (
                 <MessageReasoning
@@ -412,7 +455,7 @@ export const ThinkingMessage = () => {
 
         <div className='flex w-full flex-col gap-2 md:gap-4'>
           <div className='flex items-center gap-1 p-0 text-muted-foreground text-sm'>
-            <span className='animate-pulse'>Thinking</span>
+            <span className='animate-pulse'>Cooking up your answer</span>
             <span className='inline-flex'>
               <span className='animate-bounce [animation-delay:0ms]'>.</span>
               <span className='animate-bounce [animation-delay:150ms]'>.</span>

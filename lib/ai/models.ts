@@ -17,12 +17,6 @@ export const chatModels: ChatModel[] = [
     description: "Smallest, fastest, and most cost-effective reasoning model",
   },
   {
-    id: "openai/o3-mini",
-    name: "O3 Mini",
-    provider: "openai",
-    description: "High speed, cost-effective reasoning model",
-  },
-  {
     id: "openai/gpt-4o-mini",
     name: "GPT-4o Mini",
     provider: "openai",
