@@ -375,22 +375,19 @@ function PureMultimodalInput({
           )}
         </div>
 
-        {/* Hidden toolbar elements to preserve logic if needed, or strictly remove if not used */}
-        <div className='hidden'>
-          <PromptInputToolbar className='hidden'>
-            <PromptInputTools>
-              <AttachmentsButton
-                fileInputRef={fileInputRef}
-                selectedModelId={selectedModelId}
-                status={status}
-              />
-              <ModelSelectorCompact
-                onModelChange={onModelChange}
-                selectedModelId={selectedModelId}
-              />
-            </PromptInputTools>
-          </PromptInputToolbar>
-        </div>
+        <PromptInputToolbar>
+          <PromptInputTools>
+            <AttachmentsButton
+              fileInputRef={fileInputRef}
+              selectedModelId={selectedModelId}
+              status={status}
+            />
+            <ModelSelectorCompact
+              onModelChange={onModelChange}
+              selectedModelId={selectedModelId}
+            />
+          </PromptInputTools>
+        </PromptInputToolbar>
       </PromptInput>
     </div>
   );

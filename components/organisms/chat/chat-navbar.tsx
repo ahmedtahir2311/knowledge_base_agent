@@ -57,16 +57,12 @@ export function ChatNavbar({
           <span className='sr-only'>New Chat</span>
         </Button>
 
-        <div className='hidden'>
-          <SidebarToggle />
-        </div>
+        <SidebarToggle />
         {!isReadonly && (
-          <div className='hidden'>
-            <VisibilitySelector
-              chatId={chatId}
-              selectedVisibilityType={selectedVisibilityType}
-            />
-          </div>
+          <VisibilitySelector
+            chatId={chatId}
+            selectedVisibilityType={selectedVisibilityType}
+          />
         )}
       </div>
 
