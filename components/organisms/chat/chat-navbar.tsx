@@ -5,7 +5,7 @@ import type { User } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { Moon, PlusIcon, Sun } from "lucide-react";
+import { Moon, PlusIcon, Sun, UserIcon } from "lucide-react";
 import { SidebarToggle } from "@/components/molecules/sidebar-toggle";
 import { Button } from "@/components/atoms/button";
 import {
@@ -83,28 +83,53 @@ export function ChatNavbar({
         </Button>
 
         {/* User Icon */}
-        {user && status !== "loading" && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className='h-8 w-8 rounded-full p-0' variant='ghost'>
+        {/* User Icon */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className='h-8 w-8 rounded-full p-0' variant='ghost'>
+              {user?.email ? (
                 <Image
-                  alt={user.email ?? "User Avatar"}
+                  alt={user.email}
                   className='rounded-full'
                   height={32}
                   src={`https://avatar.vercel.sh/${user.email}`}
                   width={32}
                 />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <div className='px-2 py-1.5 text-sm'>
-                <div className='font-medium'>
-                  {isGuest ? "Guest" : user?.email}
+              ) : (
+                <div className='flex size-8 items-center justify-center rounded-full bg-muted'>
+                  <UserIcon size={18} className='text-muted-foreground' />
                 </div>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end' className='w-48 p-2'>
+            {user && !isGuest ? (
+              <div className='px-2 py-1.5 text-sm'>
+                <div className='font-medium truncate'>{user.email}</div>
               </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+            ) : (
+              <div className='flex flex-col gap-2'>
+                <div className='px-2 py-1 text-xs font-medium text-muted-foreground'>
+                  {isGuest ? "Guest User" : "Not Logged In"}
+                </div>
+                <Button
+                  className='w-full justify-start h-8 text-sm'
+                  onClick={() => router.push("/login")}
+                  variant='ghost'
+                >
+                  Sign In
+                </Button>
+                <Button
+                  className='w-full justify-start h-8 text-sm'
+                  onClick={() => router.push("/register")}
+                  variant='default'
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </nav>
   );
