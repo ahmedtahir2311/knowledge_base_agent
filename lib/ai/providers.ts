@@ -49,11 +49,26 @@ export function getLanguageModel(modelId: string) {
     return myProvider.languageModel(modelId);
   }
 
-  const isReasoningModel =
+  const isThinkingModel =
     modelId.includes("reasoning") || modelId.endsWith("-thinking");
+    
+  const isOpenAIReasoningModel = 
+    modelId.startsWith("openai/o1") || 
+    modelId.startsWith("openai/o3") || 
+    modelId.startsWith("openai/o4");
 
   // Handle reasoning models
-  if (isReasoningModel) {
+  if (isThinkingModel || isOpenAIReasoningModel) {
+    if (isOpenAIReasoningModel) {
+      // OpenAI reasoning models don't use the XML middleware
+      if (useGateway) {
+        return gateway.languageModel(modelId);
+      } else {
+        const openaiModelId = modelId.replace(/^openai\//, '');
+        return openai!.languageModel(openaiModelId);
+      }
+    }
+
     const baseModelId = modelId.replace(THINKING_SUFFIX_REGEX, "");
     
     if (useGateway) {

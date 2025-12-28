@@ -169,7 +169,10 @@ export async function POST(request: Request) {
 
         const isReasoningModel =
           selectedChatModel.includes("reasoning") ||
-          selectedChatModel.includes("thinking");
+          selectedChatModel.includes("thinking") ||
+          selectedChatModel.startsWith("openai/o1") ||
+          selectedChatModel.startsWith("openai/o3") ||
+          selectedChatModel.startsWith("openai/o4");
 
         const result = streamText({
           model: getLanguageModel(selectedChatModel),
@@ -190,13 +193,19 @@ export async function POST(request: Request) {
                 chunking: "word",
                 delayInMs: 15, // Add slight delay for better streaming visualization
               }),
-          providerOptions: isReasoningModel
-            ? {
-                anthropic: {
-                  thinking: { type: "enabled", budgetTokens: 10_000 },
-                },
-              }
-            : undefined,
+          providerOptions: {
+            openai: {
+               reasoningSummary: "auto",
+            },
+            anthropic: {
+               // Only apply thinking if it's explicitly enabled for Anthropic via a custom suffix or logic
+               // For now, only applying to models that hit the extractReasoningMiddleware in providers.ts
+               // which use XML tags. But since we don't have explicit anthropic logic here,
+               // we keep it safe or remove it if not needed.
+               // However, existing code had it. Let's keep it safe:
+               thinking: selectedChatModel.includes("thinking") ? { type: "enabled", budgetTokens: 10_000 } : undefined,
+            },
+          },
           tools: {
             getWeather,
             createDocument: createDocument({ session, dataStream }),

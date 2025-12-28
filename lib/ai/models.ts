@@ -1,5 +1,5 @@
 // Latest OpenAI models
-export const DEFAULT_CHAT_MODEL = "openai/gpt-4o-mini";
+export const DEFAULT_CHAT_MODEL = "openai/o4-mini-2025-04-16";
 
 export type ChatModel = {
   id: string;
@@ -10,6 +10,18 @@ export type ChatModel = {
 
 export const chatModels: ChatModel[] = [
   // Latest OpenAI Models
+  {
+    id: "openai/o4-mini-2025-04-16",
+    name: "O4 Mini",
+    provider: "openai",
+    description: "Smallest, fastest, and most cost-effective reasoning model",
+  },
+  {
+    id: "openai/o3-mini",
+    name: "O3 Mini",
+    provider: "openai",
+    description: "High speed, cost-effective reasoning model",
+  },
   {
     id: "openai/gpt-4o-mini",
     name: "GPT-4o Mini",
