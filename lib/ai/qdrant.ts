@@ -2,8 +2,28 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 
 export const QDRANT_COLLECTION_NAME = "knowledge_base";
 
+const unparsedUrl = process.env.QDRANT_URL || "http://localhost:6333";
+console.log("Qdrant Configured URL:", unparsedUrl);
+
+// Fix for QdrantClient defaulting to 6333 for HTTP URLs without port
+// AND fix for incorrect port 6333 in env var (when running behind proxy on 80)
+let url = unparsedUrl;
+let port = undefined;
+
+if (url.includes(":6333")) {
+  url = url.replace(":6333", "");
+  console.log("Removed incorrect port 6333 from Qdrant URL:", url);
+  port = 80;
+}
+
+if (url.startsWith("http://") && !url.split("://")[1].includes(":")) {
+  console.log("Qdrant URL missing port, defaulting to 80 for HTTP");
+  port = 80;
+}
+
 export const qdrantClient = new QdrantClient({
-  url: process.env.QDRANT_URL || "http://localhost:6333",
+  url,
+  port,
   apiKey: process.env.QDRANT_API_KEY,
 });
 
