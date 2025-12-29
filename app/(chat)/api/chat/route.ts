@@ -46,24 +46,28 @@ export const maxDuration = 60;
 
 let globalStreamContext: ResumableStreamContext | null = null;
 
-export function getStreamContext() {
-  if (!globalStreamContext) {
-    try {
-      globalStreamContext = createResumableStreamContext({
-        waitUntil: after,
-      });
-    } catch (error: any) {
-      if (error.message.includes("REDIS_URL")) {
-        console.log(
-          " > Resumable streams are disabled due to missing REDIS_URL"
-        );
-      } else {
-        console.error(error);
-      }
-    }
-  }
+// export function getStreamContext() {
+//   if (!globalStreamContext) {
+//     try {
+//       globalStreamContext = createResumableStreamContext({
+//         waitUntil: after,
+//       });
+//     } catch (error: any) {
+//       if (error.message.includes("REDIS_URL")) {
+//         console.log(
+//           " > Resumable streams are disabled due to missing REDIS_URL"
+//         );
+//       } else {
+//         console.error(error);
+//       }
+//     }
+//   }
 
-  return globalStreamContext;
+//   return globalStreamContext;
+// }
+
+export function getStreamContext() {
+    return null; // Disabling resumable streams to debug Socket errors (suspected Redis instability)
 }
 
 export async function POST(request: Request) {
@@ -302,21 +306,21 @@ export async function POST(request: Request) {
       },
     });
 
-    const streamContext = getStreamContext();
+    // const streamContext = getStreamContext();
 
-    if (streamContext) {
-      try {
-        const resumableStream = await streamContext.resumableStream(
-          streamId,
-          () => stream.pipeThrough(new JsonToSseTransformStream())
-        );
-        if (resumableStream) {
-          return new Response(resumableStream);
-        }
-      } catch (error) {
-        console.error("Failed to create resumable stream:", error);
-      }
-    }
+    // if (streamContext) {
+    //   try {
+    //     const resumableStream = await streamContext.resumableStream(
+    //       streamId,
+    //       () => stream.pipeThrough(new JsonToSseTransformStream())
+    //     );
+    //     if (resumableStream) {
+    //       return new Response(resumableStream);
+    //     }
+    //   } catch (error) {
+    //     console.error("Failed to create resumable stream:", error);
+    //   }
+    // }
 
     return new Response(stream.pipeThrough(new JsonToSseTransformStream()));
   } catch (error) {
