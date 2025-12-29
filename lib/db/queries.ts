@@ -116,7 +116,8 @@ export async function saveChat({
       title,
       visibility,
     });
-  } catch (_error) {
+  } catch (error) {
+    console.error("Failed to save chat in DB:", error);
     throw new ChatSDKError("bad_request:database", "Failed to save chat");
   }
 }

@@ -2,42 +2,52 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 
 export const QDRANT_COLLECTION_NAME = "knowledge_base";
 
-const unparsedUrl = process.env.QDRANT_URL || "http://localhost:6333";
-console.log("Qdrant Configured URL:", unparsedUrl);
+// Helper to determine Qdrant config
+function getQdrantConfig() {
+  const unparsedUrl = process.env.QDRANT_URL || "http://localhost:6333";
+  let url = unparsedUrl;
+  let port = undefined;
 
-// Fix for QdrantClient defaulting to 6333 for HTTP URLs without port
-// AND fix for incorrect port 6333 in env var (when running behind proxy on 80)
-let url = unparsedUrl;
-let port = undefined;
+  if (url.includes(":6333")) {
+    url = url.replace(":6333", "");
+    port = 80;
+  }
 
-if (url.includes(":6333")) {
-  url = url.replace(":6333", "");
-  console.log("Removed incorrect port 6333 from Qdrant URL:", url);
-  port = 80;
+  if (url.startsWith("http://") && !url.split("://")[1].includes(":")) {
+    port = 80;
+  }
+
+  return {
+    url,
+    port,
+    apiKey: process.env.QDRANT_API_KEY,
+    timeout: 60000,
+    checkCompatibility: false,
+  };
 }
 
-if (url.startsWith("http://") && !url.split("://")[1].includes(":")) {
-  console.log("Qdrant URL missing port, defaulting to 80 for HTTP");
-  port = 80;
-}
+// Export a function to get a fresh client instance to avoid socket closure issues
+// with stale connections through proxies/load balancers.
+export const getQdrantClient = () => {
+    return new QdrantClient(getQdrantConfig());
+};
 
-export const qdrantClient = new QdrantClient({
-  url,
-  port,
-  apiKey: process.env.QDRANT_API_KEY,
-  timeout: 60000, // 60 seconds
-  checkCompatibility: false, // Skip version check to avoid startup delays/errors
-});
+// Deprecated export for backward compatibility during refactor, 
+// using a getter catch accessing it if possible or just remove it.
+// To avoid breaking external imports immediately, we can try to keep it but user reported socket issues.
+// We really should force usage of getQdrantClient.
+// I'll update the usages in this file first.
 
 export async function initQdrantCollection() {
+  const client = getQdrantClient();
   try {
-    const result = await qdrantClient.getCollections();
+    const result = await client.getCollections();
     const exists = result.collections.some(
       (collection) => collection.name === QDRANT_COLLECTION_NAME
     );
 
     if (!exists) {
-      await qdrantClient.createCollection(QDRANT_COLLECTION_NAME, {
+      await client.createCollection(QDRANT_COLLECTION_NAME, {
         vectors: {
           size: 1536,
           distance: "Cosine",
@@ -49,8 +59,7 @@ export async function initQdrantCollection() {
     }
 
     // Create payload index for document_id to allow deletion by filter
-    // Qdrant requires an index for filtering in delete operations
-    await qdrantClient.createPayloadIndex(QDRANT_COLLECTION_NAME, {
+    await client.createPayloadIndex(QDRANT_COLLECTION_NAME, {
       field_name: "document_id",
       field_schema: "keyword", // Use keyword for exact UUID matching
       wait: true,
@@ -58,7 +67,7 @@ export async function initQdrantCollection() {
     console.log("Verified payload index for document_id");
 
     // Create payload index for user_id to allow filtering by user
-    await qdrantClient.createPayloadIndex(QDRANT_COLLECTION_NAME, {
+    await client.createPayloadIndex(QDRANT_COLLECTION_NAME, {
       field_name: "user_id",
       field_schema: "keyword",
       wait: true,
@@ -77,9 +86,10 @@ export async function retrieveRelevantChunks(
   limit = 5
 ) {
   console.log(`Searching Qdrant for user: ${userId}`);
+  const client = getQdrantClient();
   
   try {
-    const results = await qdrantClient.search(QDRANT_COLLECTION_NAME, {
+    const results = await client.search(QDRANT_COLLECTION_NAME, {
       vector: embedding,
       limit,
       filter: {
@@ -96,8 +106,17 @@ export async function retrieveRelevantChunks(
     });
 
     console.log(`Qdrant search found ${results.length} results`);
+    const count = await client.count(QDRANT_COLLECTION_NAME);
+    console.log(`Total points in collection: ${count.count}`);
+
     if (results.length > 0) {
         console.log(`Top result score: ${results[0].score}`);
+    } else {
+        // Double check total counts for user to debug "0 results"
+        const userCount = await client.count(QDRANT_COLLECTION_NAME, {
+          filter: { must: [{ key: "user_id", match: { value: userId } }] }
+        });
+        console.log(`Total points found for this user in DB: ${userCount.count}`);
     }
 
     return results;
@@ -112,13 +131,10 @@ export async function retrieveRelevantChunks(
 
 export async function deleteDocumentsByDocumentId(documentId: string) {
   try {
-    // Ensure documentId is valid
     if (!documentId) return;
+    const client = getQdrantClient();
 
-    // Use specific points deletion endpoint via client helper
-    // The library method 'delete' typically calls /points/delete
-    // Payload should be { filter: { ... } }
-    const result = await qdrantClient.delete(QDRANT_COLLECTION_NAME, {
+    const result = await client.delete(QDRANT_COLLECTION_NAME, {
       filter: {
         must: [
           {
@@ -139,8 +155,5 @@ export async function deleteDocumentsByDocumentId(documentId: string) {
     if (error?.data) {
         console.error("Qdrant error details:", JSON.stringify(error.data, null, 2));
     }
-    // Don't throw logic error to break the whole delete flow if only Qdrant fails
-    // or maybe we should? For now, we allow partial failure but log it.
-    // throw error; 
   }
 }

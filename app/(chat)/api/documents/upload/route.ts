@@ -2,7 +2,7 @@
 import { auth } from "@/app/(auth)/auth";
 import { generateEmbeddings } from "@/lib/ai/embedding";
 import { chunkText } from "@/lib/ai/chunking";
-import { qdrantClient, QDRANT_COLLECTION_NAME } from "@/lib/ai/qdrant";
+import { getQdrantClient, QDRANT_COLLECTION_NAME } from "@/lib/ai/qdrant";
 import { db } from "@/lib/db/drizzle";
 import { knowledgeDocument, documentChunk } from "@/lib/db/schema";
 import { put } from "@vercel/blob";
@@ -137,8 +137,8 @@ export async function POST(request: Request) {
         };
       });
 
-      // Upsert to Qdrant
       // Upsert to Qdrant in batches
+      const qdrantClient = getQdrantClient(); // Get fresh client
       const BATCH_SIZE = 50;
       for (let i = 0; i < points.length; i += BATCH_SIZE) {
         const batch = points.slice(i, i + BATCH_SIZE);
