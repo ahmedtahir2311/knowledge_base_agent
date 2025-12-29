@@ -150,8 +150,7 @@ export async function POST(request: Request) {
         try {
           const embedding = await generateEmbedding(textContent);
           const chunks = await retrieveRelevantChunks(
-            embedding,
-            session.user.id
+            embedding
           );
           context = chunks
             .map((c) => c.payload?.content)

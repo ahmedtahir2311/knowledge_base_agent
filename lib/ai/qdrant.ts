@@ -82,26 +82,16 @@ export async function initQdrantCollection() {
 
 export async function retrieveRelevantChunks(
   embedding: number[],
-  userId: string,
   limit = 5
 ) {
-  console.log(`Searching Qdrant for user: ${userId}`);
+  console.log(`Searching Qdrant (Global Search)`);
   const client = getQdrantClient();
   
   try {
     const results = await client.search(QDRANT_COLLECTION_NAME, {
       vector: embedding,
       limit,
-      filter: {
-        must: [
-          {
-            key: "user_id",
-            match: {
-              value: userId,
-            },
-          },
-        ],
-      },
+      // Filter removed to allow global search across all users' documents
       with_payload: true,
     });
 
@@ -111,12 +101,6 @@ export async function retrieveRelevantChunks(
 
     if (results.length > 0) {
         console.log(`Top result score: ${results[0].score}`);
-    } else {
-        // Double check total counts for user to debug "0 results"
-        const userCount = await client.count(QDRANT_COLLECTION_NAME, {
-          filter: { must: [{ key: "user_id", match: { value: userId } }] }
-        });
-        console.log(`Total points found for this user in DB: ${userCount.count}`);
     }
 
     return results;
