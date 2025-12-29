@@ -138,21 +138,31 @@ export async function POST(request: Request) {
       });
 
       // Upsert to Qdrant
-      await qdrantClient.upsert(QDRANT_COLLECTION_NAME, {
-        wait: true,
-        points,
-      });
+      // Upsert to Qdrant in batches
+      const BATCH_SIZE = 50;
+      for (let i = 0; i < points.length; i += BATCH_SIZE) {
+        const batch = points.slice(i, i + BATCH_SIZE);
+        console.log(`Upserting Qdrant batch ${i / BATCH_SIZE + 1} of ${Math.ceil(points.length / BATCH_SIZE)}`);
+        await qdrantClient.upsert(QDRANT_COLLECTION_NAME, {
+          wait: true,
+          points: batch,
+        });
+      }
 
-      // Save chunks to DB
+      // Save chunks to DB in batches
       if (chunks.length > 0) {
-          await db.insert(documentChunk).values(
-            points.map((p, i) => ({
-              documentId: doc.id,
-              chunkIndex: i,
-              content: chunks[i],
-              tokenCount: 0, // approximation logic needed or skip
-            }))
-          );
+        const DB_BATCH_SIZE = 500;
+        for (let i = 0; i < points.length; i += DB_BATCH_SIZE) {
+            const batch = points.slice(i, i + DB_BATCH_SIZE);
+             await db.insert(documentChunk).values(
+                batch.map((p, index) => ({
+                    documentId: doc.id,
+                    chunkIndex: i + index,
+                    content: p.payload!.content as string,
+                    tokenCount: 0, 
+                }))
+            );
+        }
       }
 
       // Update document status
