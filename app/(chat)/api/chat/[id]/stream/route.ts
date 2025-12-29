@@ -50,6 +50,14 @@ export async function GET(
     return new ChatSDKError("forbidden:chat").toResponse();
   }
 
+  /*
+   * Resumable streams are temporarily disabled to debug socket errors.
+   * This route is now a no-op.
+   */
+  return new Response(null, { status: 204 });
+
+  // Unreachable code due to getStreamContext() returning null
+  /*
   const streamIds = await getStreamIdsByChatId({ chatId });
 
   if (!streamIds.length) {
@@ -63,51 +71,13 @@ export async function GET(
   }
 
   const emptyDataStream = createUIMessageStream<ChatMessage>({
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: "Needs to exist"
     execute: () => {},
   });
 
   const stream = await streamContext.resumableStream(recentStreamId, () =>
     emptyDataStream.pipeThrough(new JsonToSseTransformStream())
   );
-
-  /*
-   * For when the generation is streaming during SSR
-   * but the resumable stream has concluded at this point.
-   */
-  if (!stream) {
-    const messages = await getMessagesByChatId({ id: chatId });
-    const mostRecentMessage = messages.at(-1);
-
-    if (!mostRecentMessage) {
-      return new Response(emptyDataStream, { status: 200 });
-    }
-
-    if (mostRecentMessage.role !== "assistant") {
-      return new Response(emptyDataStream, { status: 200 });
-    }
-
-    const messageCreatedAt = new Date(mostRecentMessage.createdAt);
-
-    if (differenceInSeconds(resumeRequestedAt, messageCreatedAt) > 15) {
-      return new Response(emptyDataStream, { status: 200 });
-    }
-
-    const restoredStream = createUIMessageStream<ChatMessage>({
-      execute: ({ writer }) => {
-        writer.write({
-          type: "data-appendMessage",
-          data: JSON.stringify(mostRecentMessage),
-          transient: true,
-        });
-      },
-    });
-
-    return new Response(
-      restoredStream.pipeThrough(new JsonToSseTransformStream()),
-      { status: 200 }
-    );
-  }
-
-  return new Response(stream, { status: 200 });
+  
+  // ... rest of logic
+  */
 }
