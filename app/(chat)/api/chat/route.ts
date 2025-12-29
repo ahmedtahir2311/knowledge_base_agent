@@ -222,7 +222,7 @@ export async function POST(request: Request) {
               }),
           providerOptions: {
             openai: {
-               reasoningSummary: "auto",
+               reasoningSummary: isReasoningModel ? "auto" : undefined,
             },
             anthropic: {
                // Only apply thinking if it's explicitly enabled for Anthropic via a custom suffix or logic

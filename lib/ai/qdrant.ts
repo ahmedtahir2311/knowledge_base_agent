@@ -25,6 +25,8 @@ export const qdrantClient = new QdrantClient({
   url,
   port,
   apiKey: process.env.QDRANT_API_KEY,
+  timeout: 60000, // 60 seconds
+  checkCompatibility: false, // Skip version check to avoid startup delays/errors
 });
 
 export async function initQdrantCollection() {
