@@ -16,12 +16,12 @@ type SuggestedActionsProps = {
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
   const suggestedActions = [
-    "What are the advantages of using Next.js",
-    "Write code to demonstrate Dijkstra's algorithm",
-    "Help me write an essay about Silicon Valley.",
-    "What is the weather in San Francisco and New York",
-    "Explain in detail the theory of relativity",
-    "Draft a packing list for a trip to Japan",
+    "Is Dubai real estate actually a good investment right now, or is the market overheated?",
+    "Should I invest in off-plan properties or ready-to-move units in Dubai?",
+    "What return on investment should I realistically expect from Dubai property?",
+    "How much capital do I need to start investing in Dubai real estate?",
+    "What are the biggest risks investors overlook when buying property in Dubai?",
+    "How do smart investors choose the right area or community in Dubai?",
   ];
 
   return (
