@@ -20,6 +20,8 @@ import {
   chat,
   type DBMessage,
   knowledgeDocument,
+  lead,
+  leadProfile,
   message,
   stream,
   type User,
@@ -498,6 +500,244 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to get stream ids by chat id"
+    );
+  }
+}
+
+// Lead Management Queries
+
+export async function createLead({
+  chatId,
+  userId,
+  name,
+  email,
+  phone,
+}: {
+  chatId: string;
+  userId: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+}) {
+  try {
+    const isComplete = !!(name && email && phone);
+    const [newLead] = await db
+      .insert(lead)
+      .values({
+        chatId,
+        userId,
+        name,
+        email,
+        phone,
+        isComplete,
+      })
+      .returning();
+
+    return newLead;
+  } catch (_error) {
+    throw new ChatSDKError("bad_request:database", "Failed to create lead");
+  }
+}
+
+export async function updateLead({
+  id,
+  name,
+  email,
+  phone,
+}: {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+}) {
+  try {
+    // Get existing lead to merge data
+    const [existingLead] = await db
+      .select()
+      .from(lead)
+      .where(eq(lead.id, id));
+
+    if (!existingLead) {
+      throw new ChatSDKError("not_found:database", "Lead not found");
+    }
+
+    const updatedName = name ?? existingLead.name;
+    const updatedEmail = email ?? existingLead.email;
+    const updatedPhone = phone ?? existingLead.phone;
+    const isComplete = !!(updatedName && updatedEmail && updatedPhone);
+
+    const [updatedLead] = await db
+      .update(lead)
+      .set({
+        name: updatedName,
+        email: updatedEmail,
+        phone: updatedPhone,
+        isComplete,
+        updatedAt: new Date(),
+      })
+      .where(eq(lead.id, id))
+      .returning();
+
+    return updatedLead;
+  } catch (_error) {
+    throw new ChatSDKError("bad_request:database", "Failed to update lead");
+  }
+}
+
+export async function getLeadByChatId({ chatId }: { chatId: string }) {
+  try {
+    const [existingLead] = await db
+      .select()
+      .from(lead)
+      .where(eq(lead.chatId, chatId));
+
+    return existingLead || null;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get lead by chat id"
+    );
+  }
+}
+
+export async function getLeadByUserId({ userId }: { userId: string }) {
+  try {
+    const [existingLead] = await db
+      .select()
+      .from(lead)
+      .where(eq(lead.userId, userId))
+      .orderBy(desc(lead.createdAt))
+      .limit(1);
+
+    return existingLead || null;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get lead by user id"
+    );
+  }
+}
+
+export async function createLeadProfile({
+  leadId,
+  preferences,
+}: {
+  leadId: string;
+  preferences: {
+    expectedROI?: string;
+    riskTolerance?: string;
+    propertyType?: string;
+    preferredLocation?: string;
+    holdingStrategy?: string;
+    dealSize?: string;
+    additionalPreferences?: string;
+  };
+}) {
+  try {
+    const metadata = preferences.additionalPreferences
+      ? { additionalPreferences: preferences.additionalPreferences }
+      : null;
+
+    const [newProfile] = await db
+      .insert(leadProfile)
+      .values({
+        leadId,
+        expectedROI: preferences.expectedROI,
+        riskTolerance: preferences.riskTolerance,
+        propertyType: preferences.propertyType,
+        preferredLocation: preferences.preferredLocation,
+        holdingStrategy: preferences.holdingStrategy,
+        dealSize: preferences.dealSize,
+        metadata,
+      })
+      .returning();
+
+    return newProfile;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to create lead profile"
+    );
+  }
+}
+
+export async function updateLeadProfile({
+  leadId,
+  preferences,
+}: {
+  leadId: string;
+  preferences: {
+    expectedROI?: string;
+    riskTolerance?: string;
+    propertyType?: string;
+    preferredLocation?: string;
+    holdingStrategy?: string;
+    dealSize?: string;
+    additionalPreferences?: string;
+  };
+}) {
+  try {
+    // Get existing profile to merge data
+    const [existingProfile] = await db
+      .select()
+      .from(leadProfile)
+      .where(eq(leadProfile.leadId, leadId));
+
+    if (!existingProfile) {
+      // Create new profile if doesn't exist
+      return await createLeadProfile({ leadId, preferences });
+    }
+
+    const existingMetadata = (existingProfile.metadata as Record<
+      string,
+      string
+    >) || {};
+    const newMetadata = preferences.additionalPreferences
+      ? {
+          ...existingMetadata,
+          additionalPreferences: preferences.additionalPreferences,
+        }
+      : existingMetadata;
+
+    const [updatedProfile] = await db
+      .update(leadProfile)
+      .set({
+        expectedROI: preferences.expectedROI ?? existingProfile.expectedROI,
+        riskTolerance:
+          preferences.riskTolerance ?? existingProfile.riskTolerance,
+        propertyType: preferences.propertyType ?? existingProfile.propertyType,
+        preferredLocation:
+          preferences.preferredLocation ?? existingProfile.preferredLocation,
+        holdingStrategy:
+          preferences.holdingStrategy ?? existingProfile.holdingStrategy,
+        dealSize: preferences.dealSize ?? existingProfile.dealSize,
+        metadata: newMetadata,
+        updatedAt: new Date(),
+      })
+      .where(eq(leadProfile.leadId, leadId))
+      .returning();
+
+    return updatedProfile;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to update lead profile"
+    );
+  }
+}
+
+export async function getLeadProfileByLeadId({ leadId }: { leadId: string }) {
+  try {
+    const [profile] = await db
+      .select()
+      .from(leadProfile)
+      .where(eq(leadProfile.leadId, leadId));
+
+    return profile || null;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get lead profile by lead id"
     );
   }
 }

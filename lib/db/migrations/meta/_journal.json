@@ -64,6 +64,13 @@
       "when": 1766915777483,
       "tag": "0008_lyrical_korvac",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1767853198799,
+      "tag": "0009_tearful_the_fallen",
+      "breakpoints": true
     }
   ]
 }

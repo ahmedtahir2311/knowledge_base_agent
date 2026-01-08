@@ -148,3 +148,39 @@ export const documentChunk = pgTable("DocumentChunk", {
 });
 
 export type DocumentChunk = InferSelectModel<typeof documentChunk>;
+
+export const lead = pgTable("Lead", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  chatId: uuid("chatId")
+    .notNull()
+    .references(() => chat.id),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  name: text("name"),
+  email: text("email"),
+  phone: text("phone"),
+  isComplete: boolean("isComplete").notNull().default(false),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export type Lead = InferSelectModel<typeof lead>;
+
+export const leadProfile = pgTable("LeadProfile", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  leadId: uuid("leadId")
+    .notNull()
+    .references(() => lead.id, { onDelete: "cascade" }),
+  expectedROI: text("expectedROI"),
+  riskTolerance: text("riskTolerance"),
+  propertyType: text("propertyType"),
+  preferredLocation: text("preferredLocation"),
+  holdingStrategy: text("holdingStrategy"),
+  dealSize: text("dealSize"),
+  metadata: json("metadata"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export type LeadProfile = InferSelectModel<typeof leadProfile>;

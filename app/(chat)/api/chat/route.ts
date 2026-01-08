@@ -18,6 +18,8 @@ import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
 import { CHAT_MODEL } from "@/lib/ai/models";
 import { getWeather } from "@/lib/ai/tools/get-weather";
+import { saveLeadTool, saveLeadProfileTool } from "@/lib/ai/tools/lead-tools";
+import { getLeadContext, buildLeadContextPrompt } from "@/lib/ai/session-context";
 import { generateEmbedding } from "@/lib/ai/embedding";
 import { retrieveRelevantChunks } from "@/lib/ai/qdrant";
 import { isProductionEnvironment } from "@/lib/constants";
@@ -142,6 +144,13 @@ export async function POST(request: Request) {
       country,
     };
 
+    // Get lead context for this conversation
+    const leadContext = await getLeadContext({
+      chatId: id,
+      userId: session.user.id,
+    });
+    const leadContextPrompt = buildLeadContextPrompt(leadContext);
+
     let context = "";
     if (message?.role === "user") {
       const textContent = message.parts
@@ -198,16 +207,18 @@ export async function POST(request: Request) {
 
         const result = streamText({
           model: getLanguageModel(CHAT_MODEL),
-          system: systemPrompt({ requestHints, context }),
+          system: systemPrompt({ requestHints, context, leadContextPrompt }),
           messages: await convertToModelMessages(uiMessages),
           stopWhen: stepCountIs(5),
-          experimental_activeTools: ["getWeather"],
+          experimental_activeTools: ["getWeather", "saveLead", "saveLeadProfile"],
           experimental_transform: smoothStream({ 
             chunking: "word",
             delayInMs: 15, // Add slight delay for better streaming visualization
           }),
           tools: {
             getWeather,
+            saveLead: saveLeadTool({ chatId: id, userId: session.user.id }),
+            saveLeadProfile: saveLeadProfileTool({ chatId: id }),
           },
           experimental_telemetry: {
             isEnabled: isProductionEnvironment,
