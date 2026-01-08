@@ -1,4 +1,2 @@
-export * from "./multimodal-input";
-export * from "./attachments-button";
-export * from "./model-selector-compact";
-export * from "./stop-button";
+export { MultimodalInput } from "./multimodal-input";
+export { StopButton } from "./stop-button";

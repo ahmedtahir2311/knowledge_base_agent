@@ -6,23 +6,12 @@ import type { Vote } from "@/lib/db/schema";
 import type { ChatMessage } from "@/lib/types";
 import { cn, sanitizeText } from "@/lib/utils";
 import { useDataStream } from "@/context/data-stream-provider";
-import { DocumentToolResult } from "@/components/molecules/document-tool-parts";
-import { DocumentPreview } from "@/components/organisms/document-preview";
 import { MessageContent } from "@/components/molecules/message-parts";
 import { Response } from "@/components/molecules/markdown-response";
-import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolInput,
-  ToolOutput,
-} from "@/components/molecules/tool-parts";
 import { SparklesIcon } from "lucide-react";
 import { MessageActions } from "@/components/molecules/message-actions";
 import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
-import { PreviewAttachment } from "@/components/molecules/preview-attachment";
-import { Weather } from "@/components/molecules/weather-widget";
 
 const PurePreviewMessage = ({
   addToolApprovalResponse,
@@ -46,10 +35,6 @@ const PurePreviewMessage = ({
   requiresScrollPadding: boolean;
 }) => {
   const [mode, setMode] = useState<"view" | "edit">("view");
-
-  const attachmentsFromMessage = message.parts.filter(
-    (part) => part.type === "file"
-  );
 
   useDataStream();
 
@@ -87,28 +72,7 @@ const PurePreviewMessage = ({
               message.role === "user" && mode !== "edit",
           })}
         >
-          {attachmentsFromMessage.length > 0 && (
-            <div
-              className='flex flex-row justify-end gap-2'
-              data-testid={"message-attachments"}
-            >
-              {attachmentsFromMessage.map((attachment) => (
-                <PreviewAttachment
-                  attachment={{
-                    name: attachment.filename ?? "file",
-                    contentType: attachment.mediaType,
-                    url: attachment.url,
-                  }}
-                  key={attachment.url}
-                />
-              ))}
-            </div>
-          )}
-
           {message.parts?.map((part, index) => {
-            const hasCreateCall = message.parts?.some(
-              (p) => p.type === "tool-createDocument"
-            );
             const { type } = part;
             const key = `message-${message.id}-part-${index}`;
 
@@ -166,11 +130,6 @@ const PurePreviewMessage = ({
             }
 
             if (type === "text") {
-              // Hide text content if this message contains a createDocument tool call
-              // to prevent duplicate display (artifact UI + raw text)
-              if (hasCreateCall) {
-                return null;
-              }
               if (mode === "view") {
                 return (
                   <div key={key}>
@@ -220,188 +179,6 @@ const PurePreviewMessage = ({
                   </div>
                 );
               }
-            }
-
-            if (type === "tool-getWeather") {
-              const { toolCallId, state } = part;
-              const approvalId = (part as { approval?: { id: string } })
-                .approval?.id;
-              const isDenied =
-                state === "output-denied" ||
-                (state === "approval-responded" &&
-                  (part as { approval?: { approved?: boolean } }).approval
-                    ?.approved === false);
-              const widthClass = "w-[min(100%,450px)]";
-
-              if (state === "output-available") {
-                return (
-                  <div className={widthClass} key={toolCallId}>
-                    <Weather weatherAtLocation={part.output} />
-                  </div>
-                );
-              }
-
-              if (isDenied) {
-                return (
-                  <div className={widthClass} key={toolCallId}>
-                    <Tool className='w-full' defaultOpen={true}>
-                      <ToolHeader
-                        state='output-denied'
-                        type='tool-getWeather'
-                      />
-                      <ToolContent>
-                        <div className='px-4 py-3 text-muted-foreground text-sm'>
-                          Weather lookup was denied.
-                        </div>
-                      </ToolContent>
-                    </Tool>
-                  </div>
-                );
-              }
-
-              if (state === "approval-responded") {
-                return (
-                  <div className={widthClass} key={toolCallId}>
-                    <Tool className='w-full' defaultOpen={true}>
-                      <ToolHeader state={state} type='tool-getWeather' />
-                      <ToolContent>
-                        <ToolInput input={part.input} />
-                      </ToolContent>
-                    </Tool>
-                  </div>
-                );
-              }
-
-              return (
-                <div className={widthClass} key={toolCallId}>
-                  <Tool className='w-full' defaultOpen={true}>
-                    <ToolHeader state={state} type='tool-getWeather' />
-                    <ToolContent>
-                      {(state === "input-available" ||
-                        state === "approval-requested") && (
-                        <ToolInput input={part.input} />
-                      )}
-                      {state === "approval-requested" && approvalId && (
-                        <div className='flex items-center justify-end gap-2 border-t px-4 py-3'>
-                          <button
-                            className='rounded-md px-3 py-1.5 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground'
-                            onClick={() => {
-                              addToolApprovalResponse({
-                                id: approvalId,
-                                approved: false,
-                                reason: "User denied weather lookup",
-                              });
-                            }}
-                            type='button'
-                          >
-                            Deny
-                          </button>
-                          <button
-                            className='rounded-md bg-primary px-3 py-1.5 text-primary-foreground text-sm transition-colors hover:bg-primary/90'
-                            onClick={() => {
-                              addToolApprovalResponse({
-                                id: approvalId,
-                                approved: true,
-                              });
-                            }}
-                            type='button'
-                          >
-                            Allow
-                          </button>
-                        </div>
-                      )}
-                    </ToolContent>
-                  </Tool>
-                </div>
-              );
-            }
-
-            if (type === "tool-createDocument") {
-              const { toolCallId } = part;
-
-              if (part.output && "error" in part.output) {
-                return (
-                  <div
-                    className='rounded-lg border border-red-200 bg-red-50 p-4 text-red-500 dark:bg-red-950/50'
-                    key={toolCallId}
-                  >
-                    Error creating document: {String(part.output.error)}
-                  </div>
-                );
-              }
-
-              return (
-                <DocumentPreview
-                  isReadonly={isReadonly}
-                  key={toolCallId}
-                  result={part.output}
-                />
-              );
-            }
-
-            if (type === "tool-updateDocument") {
-              // If we created the document in this same message, we don't need to show
-              // a separate update block. The create block's preview will inherently
-              // show the updated content as it streams/swr-revalidates.
-              if (hasCreateCall) {
-                return null;
-              }
-
-              const { toolCallId } = part;
-
-              if (part.output && "error" in part.output) {
-                return (
-                  <div
-                    className='rounded-lg border border-red-200 bg-red-50 p-4 text-red-500 dark:bg-red-950/50'
-                    key={toolCallId}
-                  >
-                    Error updating document: {String(part.output.error)}
-                  </div>
-                );
-              }
-
-              return (
-                <div className='relative' key={toolCallId}>
-                  <DocumentPreview
-                    args={{ ...part.output, isUpdate: true }}
-                    isReadonly={isReadonly}
-                    result={part.output}
-                  />
-                </div>
-              );
-            }
-
-            if (type === "tool-requestSuggestions") {
-              const { toolCallId, state } = part;
-
-              return (
-                <Tool defaultOpen={true} key={toolCallId}>
-                  <ToolHeader state={state} type='tool-requestSuggestions' />
-                  <ToolContent>
-                    {state === "input-available" && (
-                      <ToolInput input={part.input} />
-                    )}
-                    {state === "output-available" && (
-                      <ToolOutput
-                        errorText={undefined}
-                        output={
-                          "error" in part.output ? (
-                            <div className='rounded border p-2 text-red-500'>
-                              Error: {String(part.output.error)}
-                            </div>
-                          ) : (
-                            <DocumentToolResult
-                              isReadonly={isReadonly}
-                              result={part.output}
-                              type='request-suggestions'
-                            />
-                          )
-                        }
-                      />
-                    )}
-                  </ToolContent>
-                </Tool>
-              );
             }
 
             return null;

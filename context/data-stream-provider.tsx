@@ -39,3 +39,8 @@ export function useDataStream() {
   }
   return context;
 }
+
+// Simple component for handling data stream (replaces artifact stream handler)
+export function DataStreamHandler() {
+  return null;
+}
